@@ -69,62 +69,62 @@ async function loadMSRData(filters = {}) {
 
 function updateMSRMetrics() {
     const totals = msrReports.reduce((acc, report) => {
-        const totalBoxes = parseInt(report.boxes) || 0;
-        const totalSales = parseFloat(report.salles) || 0;
-        const totalCost = parseFloat(report.total_cost) || 0;
-        const cost = parseFloat(report.cost) || 0;
-        const fish = parseFloat(report.fish) || 0;
-        const iceChest = parseFloat(report.ice_chest) || 0;
-        const plastic = parseFloat(report.plastic) || 0;
-        const tape = parseFloat(report.tape) || 0;
-        const ice = parseFloat(report.ice) || 0;
-        const labor = parseFloat(report.labor) || 0;
-        const freightType = report.freight_type || '';
-        const freightAmount = parseFloat(report.freight_amount) || 0;
+        // const totalBoxes = parseInt(report.boxes) || 0;
+        // const totalSales = parseFloat(report.salles) || 0;
+        // const totalCost = parseFloat(report.total_cost) || 0;
+        // const cost = parseFloat(report.cost) || 0;
+        // const fish = parseFloat(report.fish) || 0;
+        // const iceChest = parseFloat(report.ice_chest) || 0;
+        // const plastic = parseFloat(report.plastic) || 0;
+        // const tape = parseFloat(report.tape) || 0;
+        // const ice = parseFloat(report.ice) || 0;
+        // const labor = parseFloat(report.labor) || 0;
+        // const freightType = report.freight_type || '';
+        // const freightAmount = parseFloat(report.freight_amount) || 0;
         
-        // Calculate MSR split (50% + remainder if odd)
-        const s3Boxes = Math.floor(totalBoxes / 2);
-        const msrBoxes = totalBoxes - s3Boxes;
-        const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
+        // // Calculate MSR split (50% + remainder if odd)
+        // const s3Boxes = Math.floor(totalBoxes / 2);
+        // const msrBoxes = totalBoxes - s3Boxes;
+        // const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
         
-        // Debug logging
-        console.log(`MSR Debug - Total Boxes: ${totalBoxes}, MSR Boxes: ${msrBoxes}, MSR Ratio: ${msrRatio}, Freight Type: ${freightType}`);
+        // // Debug logging
+        // console.log(`MSR Debug - Total Boxes: ${totalBoxes}, MSR Boxes: ${msrBoxes}, MSR Ratio: ${msrRatio}, Freight Type: ${freightType}`);
         
-        // Split ALL costs and expenses proportionally for MSR
-        const msrSales = totalSales * msrRatio;
-        const msrCost = cost * msrRatio;
-        const msrFish = fish * msrRatio;
-        const msrIceChest = iceChest * msrRatio;
-        const msrPlastic = plastic * msrRatio;
-        const msrTape = tape * msrRatio;
-        const msrIce = ice * msrRatio;
-        const msrLabor = labor * msrRatio;
-        const msrTotalCost = totalCost * msrRatio;
-        const msrFreightAmount = freightAmount * msrRatio;
+        // // Split ALL costs and expenses proportionally for MSR
+        // const msrSales = totalSales * msrRatio;
+        // const msrCost = cost * msrRatio;
+        // const msrFish = fish * msrRatio;
+        // const msrIceChest = iceChest * msrRatio;
+        // const msrPlastic = plastic * msrRatio;
+        // const msrTape = tape * msrRatio;
+        // const msrIce = ice * msrRatio;
+        // const msrLabor = labor * msrRatio;
+        // const msrTotalCost = totalCost * msrRatio;
+        // const msrFreightAmount = freightAmount * msrRatio;
         
-        // Calculate freight based on selected freight type
-        let freightCargo = 0;
-        let freightAir = 0;
+        // // Calculate freight based on selected freight type
+        // let freightCargo = 0;
+        // let freightAir = 0;
         
-        if (freightType === 'cargo') {
-            freightCargo = msrFreightAmount;
-        } else if (freightType === 'air') {
-            freightAir = msrFreightAmount;
-        }
+        // if (freightType === 'cargo') {
+        //     freightCargo = msrFreightAmount;
+        // } else if (freightType === 'air') {
+        //     freightAir = msrFreightAmount;
+        // }
         
         // Total MSR expenses = all operational costs + selected freight type amount
-        const totalExpenses = msrTotalCost + msrFreightAmount;
-        
-        acc.boxes += msrBoxes;
-        
+        // const totalExpenses = msrTotalCost + msrFreightAmount;
+
+        acc.boxes += report.msr.boxes || 0;
+
         // Debug final accumulation
-        console.log(`MSR Accumulation - Adding ${msrBoxes} boxes, Total so far: ${acc.boxes + msrBoxes}`);
-        acc.sales += msrSales;
-        acc.expenses += totalExpenses;
-        acc.cost += msrCost;
-        acc.freight += freightCargo + freightAir;
-        acc.netIncome += msrSales - totalExpenses;
-        
+        // console.log(`MSR Accumulation - Adding ${msrBoxes} boxes, Total so far: ${acc.boxes + msrBoxes}`);
+        acc.sales += report.msr.sales || 0;
+        acc.expenses += report.msr.expenses || 0;
+        acc.cost += report.msr.cost || 0;
+        acc.freight += report.msr.freight || 0;
+        acc.netIncome += report.msr.net_income || 0;
+
         return acc;
     }, { boxes: 0, sales: 0, expenses: 0, cost: 0, freight: 0, netIncome: 0 });
     
@@ -148,45 +148,45 @@ function updateMSRTable() {
     }
     
     tbody.innerHTML = msrReports.map(report => {
-        const totalBoxes = parseInt(report.boxes) || 0;
-        const totalSales = parseFloat(report.salles) || 0;
-        const totalCost = parseFloat(report.total_cost) || 0;
-        const cost = parseFloat(report.cost) || 0;
-        const fish = parseFloat(report.fish) || 0;
-        const iceChest = parseFloat(report.ice_chest) || 0;
-        const plastic = parseFloat(report.plastic) || 0;
-        const tape = parseFloat(report.tape) || 0;
-        const ice = parseFloat(report.ice) || 0;
-        const labor = parseFloat(report.labor) || 0;
-        const airCargo = parseFloat(report.air_cargo) || 0;
+        // const totalBoxes = parseInt(report.boxes) || 0;
+        // const totalSales = parseFloat(report.salles) || 0;
+        // const totalCost = parseFloat(report.total_cost) || 0;
+        // const cost = parseFloat(report.cost) || 0;
+        // const fish = parseFloat(report.fish) || 0;
+        // const iceChest = parseFloat(report.ice_chest) || 0;
+        // const plastic = parseFloat(report.plastic) || 0;
+        // const tape = parseFloat(report.tape) || 0;
+        // const ice = parseFloat(report.ice) || 0;
+        // const labor = parseFloat(report.labor) || 0;
+        // const airCargo = parseFloat(report.air_cargo) || 0;
         
-        // Calculate MSR split (50% + remainder if odd)
-        const s3Boxes = Math.floor(totalBoxes / 2);
-        const msrBoxes = totalBoxes - s3Boxes;
-        const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
+        // // Calculate MSR split (50% + remainder if odd)
+        // const s3Boxes = Math.floor(totalBoxes / 2);
+        // const msrBoxes = totalBoxes - s3Boxes;
+        // const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
         
-        // Split ALL values proportionally for MSR
-        const msrSales = totalSales * msrRatio;
-        const msrCost = cost * msrRatio;
-        const msrTotalCost = totalCost * msrRatio;
-        const msrAirCargo = airCargo * msrRatio;
+        // // Split ALL values proportionally for MSR
+        // const msrSales = totalSales * msrRatio;
+        // const msrCost = cost * msrRatio;
+        // const msrTotalCost = totalCost * msrRatio;
+        // const msrAirCargo = airCargo * msrRatio;
         
-        const freightCargo = msrTotalCost * 0.08;
-        const freightAir = msrAirCargo;
-        const totalExpenses = msrTotalCost + freightCargo + freightAir;
-        const netIncome = msrSales - totalExpenses;
-        const profitMargin = msrSales > 0 ? (netIncome / msrSales) * 100 : 0;
+        // const freightCargo = msrTotalCost * 0.08;
+        // const freightAir = msrAirCargo;
+        // const totalExpenses = msrTotalCost + freightCargo + freightAir;
+        // const netIncome = msrSales - totalExpenses;
+        const profitMargin = report.msr.sales > 0 ? (report.msr.net_income / report.msr.sales) * 100 : 0;
         
         return `
             <tr>
                 <td>${formatDate(report.report_date)}</td>
-                <td>${msrBoxes}</td>
-                <td>${formatCurrency(msrSales)}</td>
-                <td>${formatCurrency(totalExpenses)}</td>
-                <td>${formatCurrency(msrCost)}</td>
-                <td>${formatCurrency(freightCargo + freightAir)}</td>
-                <td class="${netIncome >= 0 ? 'text-success' : 'text-danger'}">
-                    ${formatCurrency(netIncome)}
+                <td>${report.msr.boxes}</td>
+                <td>${formatCurrency(report.msr.sales)}</td>
+                <td>${formatCurrency(report.msr.expenses)}</td>
+                <td>${formatCurrency(report.msr.cost)}</td>
+                <td>${formatCurrency(report.msr.freight)}</td>
+                <td class="${report.msr.net_income >= 0 ? 'text-success' : 'text-danger'}">
+                    ${formatCurrency(report.msr.net_income)}
                 </td>
                 <td class="${profitMargin >= 0 ? 'text-success' : 'text-danger'}">
                     ${profitMargin.toFixed(2)}%
@@ -209,13 +209,8 @@ function updateMSRRevenueChart() {
     }
     
     const labels = msrReports.map(report => formatDate(report.report_date));
-    const revenueData = msrReports.map(report => parseFloat(report.salles) || 0);
-    const netIncomeData = msrReports.map(report => {
-        const sales = parseFloat(report.salles) || 0;
-        const totalCost = parseFloat(report.total_cost) || 0;
-        const freight = totalCost * 0.08;
-        return sales - (totalCost + freight);
-    });
+    const revenueData = msrReports.map(report => parseFloat(report.msr.sales) || 0);
+    const netIncomeData = msrReports.map(report => parseFloat(report.msr.net_income) || 0);
     
     msrRevenueChart = new Chart(ctx, {
         type: 'line',
@@ -312,53 +307,51 @@ function updateMSRCostChart() {
     }
     
     const costTotals = msrReports.reduce((acc, report) => {
-        const totalCost = parseFloat(report.total_cost) || 0;
-        const freightType = report.freight_type || '';
-        const freightAmount = parseFloat(report.freight_amount) || 0;
+        // const totalCost = parseFloat(report.total_cost) || 0;
+        // const freightType = report.freight_type || '';
+        // const freightAmount = parseFloat(report.freight_amount) || 0;
         
-        // Calculate MSR split (50% + remainder if odd)
-        const totalBoxes = parseInt(report.boxes) || 0;
-        const s3Boxes = Math.floor(totalBoxes / 2);
-        const msrBoxes = totalBoxes - s3Boxes;
-        const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
-        const msrFreightAmount = freightAmount * msrRatio;
+        // // Calculate MSR split (50% + remainder if odd)
+        // const totalBoxes = parseInt(report.boxes) || 0;
+        // const s3Boxes = Math.floor(totalBoxes / 2);
+        // const msrBoxes = totalBoxes - s3Boxes;
+        // const msrRatio = totalBoxes > 0 ? msrBoxes / totalBoxes : 0;
+        // const msrFreightAmount = freightAmount * msrRatio;
         
-        acc.operationalCost += totalCost * msrRatio;
+        acc.operationalCost += report.msr.cost || 0;
         
-        if (freightType === 'cargo') {
-            acc.freightCargo += msrFreightAmount;
-        } else if (freightType === 'air') {
-            acc.freightAir += msrFreightAmount;
-        }
+        // if (freightType === 'cargo') {
+        //     acc.freightCargo += msrFreightAmount;
+        // } else if (freightType === 'air') {
+        //     acc.freightAir += msrFreightAmount;
+        // }
+        
+        acc.freightCargo += report.msr.freight || 0;
         
         return acc;
-    }, { operationalCost: 0, freightCargo: 0, freightAir: 0 });
+    }, { operationalCost: 0, freightCargo: 0});
     
     msrCostChart = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Operational Cost', 'Freight Cargo', 'Freight Air'],
+            labels: ['Operational Cost', 'Freight Cargo'],
             datasets: [{
                 data: [
                     costTotals.operationalCost, 
-                    costTotals.freightCargo, 
-                    costTotals.freightAir
+                    costTotals.freightCargo
                 ],
                 backgroundColor: [
                     '#16a085', // Teal for operational
-                    '#3498db', // Blue for cargo
-                    '#e74c3c'  // Red for air
+                    '#3498db'  // Blue for cargo
                 ],
                 borderColor: [
                     '#138d75', // Darker teal border
-                    '#2980b9', // Darker blue border
-                    '#c0392b'  // Darker red border
+                    '#2980b9'  // Darker blue border
                 ],
                 borderWidth: 3,
                 hoverBackgroundColor: [
                     '#48c9b0', // Lighter teal on hover
-                    '#5dade2', // Lighter blue on hover
-                    '#ec7063'  // Lighter red on hover
+                    '#5dade2'  // Lighter blue on hover
                 ],
                 hoverBorderWidth: 4
             }]
@@ -400,18 +393,18 @@ function updateMSRSummary() {
     }
     
     const totals = msrReports.reduce((acc, report) => {
-        const sales = parseFloat(report.salles) || 0;
-        const totalCost = parseFloat(report.total_cost) || 0;
-        const freight = totalCost * 0.08;
-        const totalExpenses = totalCost + freight;
-        const netIncome = sales - totalExpenses;
-        const profitMargin = sales > 0 ? (netIncome / sales) * 100 : 0;
-        const boxes = parseInt(report.boxes) || 0;
+        // const sales = parseFloat(report.salles) || 0;
+        // const totalCost = parseFloat(report.total_cost) || 0;
+        // const freight = totalCost * 0.08;
+        // const totalExpenses = totalCost + freight;
+        // const netIncome = sales - totalExpenses;
+        const profitMargin = report.msr.sales > 0 ? (report.msr.net_income / report.msr.sales) * 100 : 0;
+        // const boxes = parseInt(report.boxes) || 0;
         
-        acc.totalBoxes += boxes;
-        acc.totalNetIncome += netIncome;
+        acc.totalBoxes += report.msr.boxes || 0;
+        acc.totalNetIncome += report.msr.net_income || 0;
         acc.profitMargin += profitMargin;
-        acc.revenuePerBox += boxes > 0 ? sales / boxes : 0;
+        acc.revenuePerBox += report.msr.boxes > 0 ? report.msr.sales / report.msr.boxes : 0;
         
         return acc;
     }, { totalBoxes: 0, totalNetIncome: 0, profitMargin: 0, revenuePerBox: 0 });

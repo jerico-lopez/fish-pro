@@ -278,7 +278,7 @@
                     Total Cost
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     id="totalCost"
                     name="total_cost"
                     class="form-control"
@@ -296,7 +296,7 @@
                     Sales per Box
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     id="salesPerBox"
                     name="sales_per_box"
                     class="form-control"
@@ -311,7 +311,7 @@
                     Cost per Box
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     id="costPerBox"
                     name="cost_per_box"
                     class="form-control"
@@ -324,36 +324,87 @@
 
               <div class="form-row">
                 <div class="form-col">
-                  <label class="form-label" for="freightType">
-                    <i class="fas fa-shipping-fast"></i>
-                    Freight Type
-                  </label>
-                  <select
-                    id="freightType"
-                    name="freight_type"
-                    class="form-control"
-                    required
-                  >
-                    <option value="">Select Freight Type</option>
-                    <option value="air">Freight Air</option>
-                    <option value="cargo">Freight Cargo</option>
-                  </select>
-                </div>
-                <div class="form-col">
-                  <label class="form-label" for="freightAmount">
+                  <label class="form-label" for="airCargo">
                     <i class="fas fa-truck"></i>
-                    Freight Amount
+                    Air Cargo
                   </label>
                   <input
                     type="text"
-                    id="freightAmount"
-                    name="freight_amount"
+                    id="airCargo"
+                    name="air_cargo"
                     class="form-control"
                     min="0"
                     step="0.01"
                     required
                   />
                 </div>
+                <div class="form-col">
+                  <label class="form-label" for="freightMSR">
+                    <i class="fas fa-truck"></i>
+                    Freight MSR
+                  </label>
+                  <input
+                    type="text"
+                    id="freightMSR"
+                    name="freight_msr"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="freightBasZam">
+                    <i class="fas fa-truck"></i>
+                    Freight BAS-ZAM
+                  </label>
+                  <input
+                    type="text"
+                    id="freightBasZam"
+                    name="freight_bas_zam"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="freightAirCargo">
+                    <i class="fas fa-truck"></i>
+                    Freight Air Cargo
+                  </label>
+                  <input
+                    type="text"
+                    id="freightAirCargo"
+                    name="freight_air_cargo"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="freightT2Market">
+                    <i class="fas fa-truck"></i>
+                    Freight T2-Market
+                  </label>
+                  <input
+                    type="text"
+                    id="freightT2Market"
+                    name="freight_t2_market"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col"></div>
               </div>
 
               <!-- Summary Section -->
@@ -534,13 +585,13 @@
           unformatOnSubmit: true,
         });
       }
-      
+
       // Reusable Number formatter function
       function initNumFormatter(selector) {
         return new AutoNumeric(selector, {
           decimalCharacter: ".",
           digitGroupSeparator: ",",
-          decimalPlaces: 0, 
+          decimalPlaces: 0,
           unformatOnSubmit: true,
         });
       }
@@ -548,8 +599,15 @@
       // Format inputs
       initPesoFormatter("#salles");
       initPesoFormatter("#fish");
-      initPesoFormatter("#freightAmount");
       initPesoFormatter("#labor");
+      initPesoFormatter("#totalCost");
+      initPesoFormatter("#salesPerBox");
+      initPesoFormatter("#costPerBox");
+      initPesoFormatter("#airCargo");
+      initPesoFormatter("#freightMSR");
+      initPesoFormatter("#freightBasZam");
+      initPesoFormatter("#freightAirCargo");
+      initPesoFormatter("#freightT2Market");
     </script>
   </body>
 </html>

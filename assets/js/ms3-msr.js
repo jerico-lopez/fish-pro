@@ -72,12 +72,15 @@ function updateSummaryStats() {
         acc.boxes += parseInt(report.boxes) || 0;
         acc.sales += parseFloat(report.salles) || 0;
         acc.totalCost += parseFloat(report.total_cost) || 0;
-        acc.airCargo += parseFloat(report.air_cargo) || 0;
+        acc.msr_freight += parseFloat(report.msr.freight) || 0;
+        acc.air_cargo += parseFloat(report.s3.freight.air_cargo) || 0;
+        acc.bas_zam += report.s3.freight.bas_zam || 0;
+        acc.t2_market += report.s3.freight.t2_market || 0;
         return acc;
-    }, { boxes: 0, sales: 0, totalCost: 0, airCargo: 0 });
-    
-    const totalExpenses = totals.totalCost + totals.airCargo;
-    const netIncome = totals.sales - totalExpenses;
+    }, { boxes: 0, sales: 0, totalCost: 0, msr_freight: 0, air_cargo: 0, bas_zam: 0, t2_market: 0 });
+
+    const totalExpenses = totals.totalCost + totals.air_cargo + totals.bas_zam + totals.t2_market + totals.msr_freight || 0;
+    const netIncome = totals.sales - totalExpenses || 0;
     
     document.getElementById('totalBoxesMS3').textContent = totals.boxes;
     document.getElementById('totalSalesMS3').textContent = formatCurrency(totals.sales);
@@ -97,7 +100,7 @@ function updateReportsTable() {
     }
     
     tbody.innerHTML = currentReports.map(report => {
-        const totalExpenses = (parseFloat(report.total_cost) || 0) + (parseFloat(report.air_cargo) || 0);
+        const totalExpenses = (parseFloat(report.total_cost) || 0) + (parseFloat(report.s3.freight.bas_zam) || 0) + (parseFloat(report.s3.freight.t2_market) || 0) + (parseFloat(report.s3.freight.air_cargo) || 0) + (parseFloat(report.msr.freight) || 0);
         const netIncome = (parseFloat(report.salles) || 0) - totalExpenses;
         
         return `
@@ -105,7 +108,7 @@ function updateReportsTable() {
                 <td>${formatDate(report.report_date)}</td>
                 <td>${report.boxes || 0}</td>
                 <td>${formatCurrency(report.salles || 0)}</td>
-                <td>${formatCurrency(report.cost || 0)}</td>
+                <td>${formatCurrency(report.total_cost || 0)}</td>
                 <td>${formatCurrency(report.fish || 0)}</td>
                 <td>${formatCurrency(report.ice_chest || 0)}</td>
                 <td>${formatCurrency(report.plastic || 0)}</td>
@@ -132,7 +135,7 @@ function updateCostBreakdown() {
         acc.tape += parseFloat(report.tape) || 0;
         acc.ice += parseFloat(report.ice) || 0;
         acc.labor += parseFloat(report.labor) || 0;
-        acc.airCargo += parseFloat(report.air_cargo) || 0;
+        acc.airCargo += parseFloat(report.air_cargo) || 0;  
         return acc;
     }, { fish: 0, iceChest: 0, plastic: 0, tape: 0, ice: 0, labor: 0, airCargo: 0 });
     
@@ -161,7 +164,7 @@ function updateSalesExpensesChart() {
     const labels = currentReports.map(report => formatDate(report.report_date));
     const salesData = currentReports.map(report => parseFloat(report.salles) || 0);
     const expensesData = currentReports.map(report => 
-        (parseFloat(report.total_cost) || 0) + (parseFloat(report.air_cargo) || 0)
+        (parseFloat(report.total_cost) || 0) + (parseFloat(report.s3.freight.air_cargo) || 0) + (parseFloat(report.s3.freight.bas_zam) || 0) + (parseFloat(report.s3.freight.t2_market) || 0) + (parseFloat(report.msr.freight) || 0)
     );
     
     salesExpensesChart = new Chart(ctx, {
@@ -216,7 +219,7 @@ function updateProfitMarginChart() {
     const labels = currentReports.map(report => formatDate(report.report_date));
     const profitMarginData = currentReports.map(report => {
         const sales = parseFloat(report.salles) || 0;
-        const expenses = (parseFloat(report.total_cost) || 0) + (parseFloat(report.air_cargo) || 0);
+        const expenses = (parseFloat(report.total_cost) || 0) + (parseFloat(report.s3.freight.air_cargo) || 0) + (parseFloat(report.s3.freight.bas_zam) || 0) + (parseFloat(report.s3.freight.t2_market) || 0) + (parseFloat(report.msr.freight) || 0);
         const netIncome = sales - expenses;
         return sales > 0 ? (netIncome / sales) * 100 : 0;
     });

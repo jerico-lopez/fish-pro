@@ -161,7 +161,8 @@ function updateInventoryDisplay(inventoryData) {
 function addCalculationListeners() {
     const inputs = [
         'boxes', 'salles', 'cost', 'fish', 'iceChest', 
-        'plastic', 'tape', 'ice', 'labor', 'freightType', 'freightAmount'
+        'plastic', 'tape', 'ice', 'labor', 
+        'freightMSR', 'freightBasZam', 'freightAirCargo', 'freightT2Market', 'airCargo'
     ];
     
     inputs.forEach(inputId => {
@@ -176,12 +177,12 @@ function addCalculationListeners() {
             }
         }
 
-            const boxesInput = document.getElementById('boxes');
-            if (boxesInput) {
-                boxesInput.addEventListener('input', function() {
-                    calculateTotals();
-                });
-            }
+        const boxesInput = document.getElementById('boxes');
+        if (boxesInput) {
+            boxesInput.addEventListener('input', function() {
+                calculateTotals();
+            });
+        }
     });
     
     // Form submission
@@ -223,18 +224,16 @@ function calculateTotals() {
     const salles = sallesInput ? parseFloat(sallesInput.getNumber()) : (parseFloat(document.getElementById('salles').value) || 0);
     const fishInput = AutoNumeric.getAutoNumericElement('#fish');
     const fish = fishInput ? parseFloat(fishInput.getNumber()) : (parseFloat(document.getElementById('fish').value) || 0);
-    const freightInput = AutoNumeric.getAutoNumericElement('#freightAmount');
-    const freightAmount = freightInput ? parseFloat(freightInput.getNumber()) : (parseFloat(document.getElementById('freightAmount').value) || 0);
     const laborInput = AutoNumeric.getAutoNumericElement('#labor');
     const labor = laborInput ? parseFloat(laborInput.getNumber()) : (parseFloat(document.getElementById('labor').value) || 0);
+    const airCargoNum = AutoNumeric.getAutoNumericElement('#airCargo');
+    const airCargoInput = airCargoNum ? parseFloat(airCargoNum.getNumber()) : (parseFloat(document.getElementById('airCargo').value) || 0);
 
     // Inventory items
     const iceChest_qty = boxes; // iceChest_qty = boxes_qty
-    const plastic_qty = parseFloat(document.getElementById('plastic').value) || 0;
+    // const plastic_qty = parseFloat(document.getElementById('plastic').value) || 0;
     const tape_qty = parseFloat(document.getElementById('tape').value) || 0;
     const ice_qty = parseFloat(document.getElementById('ice').value) || 0;
-    const freightType = document.getElementById('freightType').value;
-
     // Unit costs with fallbacks
     const ICE_CHEST_COST = unitCosts['Ice Chest'] || 190.00;
     const PLASTIC_COST = unitCosts['Plastic'] || 12.00;
@@ -247,11 +246,15 @@ function calculateTotals() {
     const total_plastic_cost = total_plastic_qty * PLASTIC_COST;
     const total_tape_cost = (tape_qty * iceChest_qty) * TAPE_COST;
     const total_ice_cost = ice_qty * ICE_COST;
-    console.log(total_ice_cost);
     const laborCost = labor * iceChest_qty;
+    // log calculations for debugging
+    console.log({
+        boxes, salles, fish, labor, airCargoInput,
+        total_iceChest_cost, total_plastic_cost, total_tape_cost, total_ice_cost, fish, laborCost
+    });
 
     // Final total cost
-    const totalCost = total_iceChest_cost + total_plastic_cost + total_tape_cost + total_ice_cost + fish + laborCost + freightAmount;
+    const totalCost = total_iceChest_cost + total_plastic_cost + total_tape_cost + total_ice_cost + fish + laborCost;
     const salesPerBox = boxes > 0 ? salles / boxes : 0;
     const costPerBox = boxes > 0 ? totalCost / boxes : 0;
     const totalExpenses = totalCost; // Already includes freightAmount
@@ -259,13 +262,19 @@ function calculateTotals() {
     const profitMargin = salles > 0 ? (netIncome / salles) * 100 : 0;
 
     // Calculate 50/50 split for MSR and S3 sections
-    calculateMSRAndS3Split(boxes, salles, totalCost, totalExpenses, freightType, freightAmount);
+    calculateMSRAndS3Split(boxes, salesPerBox, costPerBox, airCargoInput);
 
     // Update calculated fields
     document.getElementById('plastic').value = total_plastic_qty;
-    document.getElementById('totalCost').value = totalCost.toFixed(2);
-    document.getElementById('salesPerBox').value = salesPerBox.toFixed(2);
-    document.getElementById('costPerBox').value = costPerBox.toFixed(2);
+    AutoNumeric.getAutoNumericElement('#totalCost').set(totalCost.toFixed(2));
+    AutoNumeric.getAutoNumericElement('#salesPerBox').set(salesPerBox.toFixed(2));
+    AutoNumeric.getAutoNumericElement('#costPerBox').set(costPerBox.toFixed(2));
+
+    // Update Freight Fields
+    AutoNumeric.getAutoNumericElement('#freightMSR').set(window.msrS3Split.msr.freightMSR || 0);
+    AutoNumeric.getAutoNumericElement('#freightAirCargo').set(window.msrS3Split.s3.freightAirCargo || 0);
+    AutoNumeric.getAutoNumericElement('#freightBasZam').set(window.msrS3Split.s3.freightBasZam || 0);
+    AutoNumeric.getAutoNumericElement('#freightT2Market').set(window.msrS3Split.s3.freightT2Market || 0);
 
     // Update summary
     document.getElementById('summaryNetIncome').textContent = formatCurrency(netIncome);
@@ -285,7 +294,7 @@ function calculateTotals() {
     }
 }
 
-function calculateMSRAndS3Split(totalBoxes, totalSales, totalCost, totalExpenses, freightType, freightAmount) {
+function calculateMSRAndS3Split(totalBoxes, salesPerBox, costPerBox, airCargoInput ) {
     // Calculate 50/50 split for boxes
     // For even numbers: split equally
     // For odd numbers: MSR gets the extra box
@@ -294,69 +303,52 @@ function calculateMSRAndS3Split(totalBoxes, totalSales, totalCost, totalExpenses
     
     // Calculate proportional split for sales and costs
     if (totalBoxes > 0) {
-        const s3Ratio = s3Boxes / totalBoxes;
-        const msrRatio = msrBoxes / totalBoxes;
-        
-        // Split sales proportionally
-        const s3Sales = totalSales * s3Ratio;
-        const msrSales = totalSales * msrRatio;
-        
-        // Split costs proportionally
-        const s3Cost = totalCost * s3Ratio;
-        const msrCost = totalCost * msrRatio;
-        
-        // Split freight amount proportionally
-        const s3FreightAmount = freightAmount * s3Ratio;
-        const msrFreightAmount = freightAmount * msrRatio;
-        
-        // Split expenses proportionally
-        const s3Expenses = totalExpenses * s3Ratio;
-        const msrExpenses = totalExpenses * msrRatio;
-        
+        //S3 Expenses
+        const s3Cost = s3Boxes * costPerBox;
+        const freightBasZam = 350 * s3Boxes;
+        const freightAirCargo = airCargoInput / totalBoxes * s3Boxes;
+        const freightT2Market = 140 * s3Boxes;
+        const s3Expenses = s3Cost + freightBasZam + freightT2Market + freightAirCargo;
+
+        //S3 INCOME
+        const s3Sales = s3Boxes * salesPerBox;
+        const s3NetIncome = s3Sales - s3Expenses;
+
+                //MSR Expenses
+        const msrCost = msrBoxes * costPerBox;
+        const msrFreight = 1800 * msrBoxes;
+        const msrExpenses = msrCost + msrFreight + airCargo;
+
+        //MSR INCOME
+        const msrSales = msrBoxes * salesPerBox;
+        const msrNetIncome = msrSales - msrExpenses;
+
         // Store the calculated values in window object for access by other modules
         window.msrS3Split = {
             s3: {
                 boxes: s3Boxes,
                 sales: s3Sales,
                 cost: s3Cost,
+                freightBasZam: freightBasZam,
+                freightAirCargo: freightAirCargo,
+                freightT2Market: freightT2Market,
                 expenses: s3Expenses,
-                freightType: freightType,
-                freightAmount: s3FreightAmount
+                netIncome: s3NetIncome,
             },
             msr: {
                 boxes: msrBoxes,
                 sales: msrSales,
                 cost: msrCost,
+                freightMSR: msrFreight,
                 expenses: msrExpenses,
-                freightType: freightType,
-                freightAmount: msrFreightAmount
+                netIncome: msrNetIncome,
             }
         };
-        
-        // Log the split for debugging (can be removed in production)
-        console.log('MSR & S3 Split Calculation:', {
-            totalBoxes: totalBoxes,
-            freightType: freightType,
-            s3: {
-                boxes: s3Boxes,
-                sales: formatCurrency(s3Sales),
-                cost: formatCurrency(s3Cost),
-                expenses: formatCurrency(s3Expenses),
-                freightAmount: formatCurrency(s3FreightAmount)
-            },
-            msr: {
-                boxes: msrBoxes,
-                sales: formatCurrency(msrSales),
-                cost: formatCurrency(msrCost),
-                expenses: formatCurrency(msrExpenses),
-                freightAmount: formatCurrency(msrFreightAmount)
-            }
-        });
     } else {
         // Reset values when no boxes
         window.msrS3Split = {
-            s3: { boxes: 0, sales: 0, cost: 0, expenses: 0, freightType: '', freightAmount: 0 },
-            msr: { boxes: 0, sales: 0, cost: 0, expenses: 0, freightType: '', freightAmount: 0 }
+            s3: { boxes: 0, sales: 0, cost: 0, expenses: 0, freightBasZam: 0, freightAirCargo: 0, freightT2Market: 0 },
+            msr: { boxes: 0, sales: 0, cost: 0, expenses: 0, freightMSR: 0 }
         };
     }
 }
@@ -392,7 +384,8 @@ async function handleFormSubmit(e) {
     const numericFields = [
         'boxes', 'salles', 'cost', 'fish', 'ice_chest', 'plastic', 
         'tape', 'ice', 'labor', 'total_cost', 'sales_per_box', 
-        'cost_per_box', 'freight_amount'
+        'cost_per_box', 'freight_msr', 'freight_bas_zam', 'freight_air_cargo', 
+        'freight_t2_market', 'airCargo'
     ];
     
     numericFields.forEach(field => {
@@ -494,7 +487,11 @@ async function loadReportsHistory(filters = {}) {
         if (result.success && result.data && result.data.length > 0) {
             tbody.innerHTML = result.data.map(report => {
                 const netIncome = (report.salles || 0) - (
-                    (report.total_cost || 0) + (report.freight_amount || 0)
+                    (report.total_cost || 0) +
+                    (report.freight_msr || 0) +
+                    (report.freight_bas_zam || 0) +
+                    (report.freight_air_cargo || 0) +
+                    (report.freight_t2_market || 0)
                 );
                 
                 return `
@@ -571,8 +568,10 @@ function populateEditForm(report) {
         'editTape': 'tape',
         'editIce': 'ice',
         'editLabor': 'labor',
-        'editFreightType': 'freight_type',
-        'editFreightAmount': 'freight_amount'
+        'editFreightMSR': 'freight_msr',
+        'editFreightBasZam': 'freight_bas_zam',
+        'editFreightAirCargo': 'freight_air_cargo',
+        'editFreightT2Market': 'freight_t2_market'
     };
     
     Object.keys(fieldMappings).forEach(editFieldId => {
@@ -608,8 +607,10 @@ async function saveEditedReport() {
         'editTape': 'tape',
         'editIce': 'ice',
         'editLabor': 'labor',
-        'editFreightType': 'freight_type',
-        'editFreightAmount': 'freight_amount'
+        'editFreightMSR': 'freight_msr',
+        'editFreightBasZam': 'freight_bas_zam',
+        'editFreightAirCargo': 'freight_air_cargo',
+        'editFreightT2Market': 'freight_t2_market'
     };
     
     Object.keys(fieldMappings).forEach(editFieldId => {
