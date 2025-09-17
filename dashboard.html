@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Pro - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body data-theme="light">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo">
+                <h3>Fish Pro</h3>
+                <p class="text-muted">Management System</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item">
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="daily-report.html" class="nav-link" data-permission="daily_report">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Daily Fish Report</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="ms3-msr.html" class="nav-link" data-permission="ms3_msr">
+                        <i class="fas fa-chart-line"></i>
+                        <span>MS3 & MSR</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="s3.html" class="nav-link" data-permission="s3">
+                        <i class="fas fa-box"></i>
+                        <span>S3</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="msr.html" class="nav-link" data-permission="msr">
+                        <i class="fas fa-receipt"></i>
+                        <span>MSR</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="inventory.html" class="nav-link" data-permission="inventory">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Inventory</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="manage-users.html" class="nav-link" data-permission="manage_users">
+                        <i class="fas fa-users"></i>
+                        <span>Manage Users</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="settings.html" class="nav-link" data-permission="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Dashboard</h1>
+                </div>
+                
+                <div class="header-right">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                    </button>
+                    <button class="user-menu-btn" onclick="showUserMenu()">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Welcome Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Welcome to Fish Pro</h2>
+                        <span class="text-muted" id="currentDateTime"></span>
+                    </div>
+                    <div class="card-body">
+                        <p>Welcome back, <strong id="userName"></strong>! Here's your dashboard overview.</p>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-value" id="totalReports">0</div>
+                        <div class="stat-label">Total Reports</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-value" id="totalBoxes">0</div>
+                        <div class="stat-label">Total Boxes</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-peso-sign"></i>
+                        </div>
+                        <div class="stat-value" id="totalSales">₱0</div>
+                        <div class="stat-label">Total Sales</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value" id="netIncome">₱0</div>
+                        <div class="stat-label">Net Income</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Inventory Alerts -->
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Recent Reports</h3>
+                                <a href="daily-report.html" class="btn btn-primary btn-sm">View All</a>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Boxes</th>
+                                            <th>Sales</th>
+                                            <th>Net Income</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentReports">
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Inventory Alerts</h3>
+                                <a href="inventory.html" class="btn btn-warning btn-sm">Manage</a>
+                            </div>
+                            <div id="inventoryAlerts">
+                                <p class="text-center text-muted">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-center" style="gap: 15px; flex-wrap: wrap;">
+                            <a href="daily-report.html" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                New Report
+                            </a>
+                            <a href="inventory.html" class="btn btn-warning">
+                                <i class="fas fa-warehouse"></i>
+                                Check Inventory
+                            </a>
+                            <a href="ms3-msr.html" class="btn btn-info">
+                                <i class="fas fa-chart-bar"></i>
+                                View Analytics
+                            </a>
+                            <a href="manage-users.html" class="btn btn-secondary" id="manageUsersBtn" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                Manage Users
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/websocket.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

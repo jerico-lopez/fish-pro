@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fish Pro - Daily Fish Report</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/css/style.css" rel="stylesheet" />
+  </head>
+  <body data-theme="light">
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo" />
+          <h3>Fish Pro</h3>
+          <p class="text-muted">Management System</p>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-item">
+            <a href="dashboard.html" class="nav-link">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="daily-report.html" class="nav-link active">
+              <i class="fas fa-file-alt"></i>
+              <span>Daily Fish Report</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="ms3-msr.html" class="nav-link" data-permission="ms3_msr">
+              <i class="fas fa-chart-line"></i>
+              <span>MS3 & MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="s3.html" class="nav-link" data-permission="s3">
+              <i class="fas fa-box"></i>
+              <span>S3</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="msr.html" class="nav-link" data-permission="msr">
+              <i class="fas fa-receipt"></i>
+              <span>MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="inventory.html"
+              class="nav-link"
+              data-permission="inventory"
+            >
+              <i class="fas fa-warehouse"></i>
+              <span>Inventory</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="manage-users.html"
+              class="nav-link"
+              data-permission="manage_users"
+            >
+              <i class="fas fa-users"></i>
+              <span>Manage Users</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="settings.html" class="nav-link" data-permission="settings">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1 class="page-title">Daily Fish Report</h1>
+          </div>
+
+          <div class="header-right">
+            <button class="theme-toggle" onclick="toggleTheme()">
+              <i class="fas fa-moon"></i>
+            </button>
+            <button class="notification-btn" onclick="showNotifications()">
+              <i class="fas fa-bell"></i>
+              <span
+                class="notification-badge"
+                id="notificationBadge"
+                style="display: none"
+                >0</span
+              >
+            </button>
+            <button class="user-menu-btn" onclick="showUserMenu()">
+              <i class="fas fa-user-circle"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Report Form -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Create New Daily Report</h2>
+              <button class="btn btn-secondary" onclick="showReportHistory()">
+                <i class="fas fa-history"></i>
+                View History
+              </button>
+            </div>
+
+            <form id="dailyReportForm">
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="reportDate">
+                    <i class="fas fa-calendar"></i>
+                    Report Date
+                  </label>
+                  <input
+                    type="date"
+                    id="reportDate"
+                    name="report_date"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="boxes">
+                    <i class="fas fa-box"></i>
+                    Boxes
+                  </label>
+                  <input
+                    type="number"
+                    id="boxes"
+                    name="boxes"
+                    class="form-control"
+                    min="0"
+                    step="1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="salles">
+                    <i class="fas fa-peso-sign"></i>
+                    Sales
+                  </label>
+                  <input
+                    type="text"
+                    id="salles"
+                    name="salles"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="fish">
+                    <i class="fas fa-fish"></i>
+                    Fish
+                  </label>
+                  <input
+                    type="text"
+                    id="fish"
+                    name="fish"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="iceChest">
+                    <i class="fas fa-cube"></i>
+                    Ice Chest
+                  </label>
+                  <input
+                    type="number"
+                    id="iceChest"
+                    name="ice_chest"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="plastic">
+                    <i class="fas fa-shopping-bag"></i>
+                    Plastic
+                  </label>
+                  <input
+                    type="number"
+                    id="plastic"
+                    name="plastic"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="tape">
+                    <i class="fas fa-tape"></i>
+                    Tape
+                  </label>
+                  <input
+                    type="number"
+                    id="tape"
+                    name="tape"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="ice">
+                    <i class="fas fa-snowflake"></i>
+                    Ice
+                  </label>
+                  <input
+                    type="number"
+                    id="ice"
+                    name="ice"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="labor">
+                    <i class="fas fa-users"></i>
+                    Labor
+                  </label>
+                  <input
+                    type="text"
+                    id="labor"
+                    name="labor"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="totalCost">
+                    <i class="fas fa-calculator"></i>
+                    Total Cost
+                  </label>
+                  <input
+                    type="number"
+                    id="totalCost"
+                    name="total_cost"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="salesPerBox">
+                    <i class="fas fa-chart-bar"></i>
+                    Sales per Box
+                  </label>
+                  <input
+                    type="number"
+                    id="salesPerBox"
+                    name="sales_per_box"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    readonly
+                  />
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="costPerBox">
+                    <i class="fas fa-chart-pie"></i>
+                    Cost per Box
+                  </label>
+                  <input
+                    type="number"
+                    id="costPerBox"
+                    name="cost_per_box"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <label class="form-label" for="freightType">
+                    <i class="fas fa-shipping-fast"></i>
+                    Freight Type
+                  </label>
+                  <select
+                    id="freightType"
+                    name="freight_type"
+                    class="form-control"
+                    required
+                  >
+                    <option value="">Select Freight Type</option>
+                    <option value="air">Freight Air</option>
+                    <option value="cargo">Freight Cargo</option>
+                  </select>
+                </div>
+                <div class="form-col">
+                  <label class="form-label" for="freightAmount">
+                    <i class="fas fa-truck"></i>
+                    Freight Amount
+                  </label>
+                  <input
+                    type="text"
+                    id="freightAmount"
+                    name="freight_amount"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- Summary Section -->
+              <div
+                class="card"
+                style="background: var(--surface-color); margin-top: 20px"
+              >
+                <div class="card-header">
+                  <h3 class="card-title">Report Summary</h3>
+                </div>
+                <div
+                  class="stats-grid"
+                  style="
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                  "
+                >
+                  <div class="stat-card">
+                    <div class="stat-value" id="summaryNetIncome">₱0.00</div>
+                    <div class="stat-label">Net Income</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-value" id="summaryTotalExpenses">
+                      ₱0.00
+                    </div>
+                    <div class="stat-label">Total Expenses</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-value" id="summaryProfitMargin">0%</div>
+                    <div class="stat-label">Profit Margin</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-top: 30px">
+                <div class="form-col">
+                  <button
+                    type="button"
+                    class="btn btn-secondary w-100"
+                    onclick="resetForm()"
+                  >
+                    <i class="fas fa-undo"></i>
+                    Reset Form
+                  </button>
+                </div>
+                <div class="form-col">
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-save"></i>
+                    Save Report
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="alert"
+                id="reportAlert"
+                style="display: none; margin-top: 20px"
+              ></div>
+            </form>
+          </div>
+
+          <!-- Reports History -->
+          <div class="card" id="reportsHistory" style="display: none">
+            <div class="card-header">
+              <h2 class="card-title">Reports History</h2>
+              <div class="d-flex" style="gap: 10px">
+                <input
+                  type="date"
+                  id="filterDateFrom"
+                  class="form-control"
+                  style="width: auto"
+                />
+                <input
+                  type="date"
+                  id="filterDateTo"
+                  class="form-control"
+                  style="width: auto"
+                />
+                <button class="btn btn-primary" onclick="filterReports()">
+                  <i class="fas fa-filter"></i>
+                  Filter
+                </button>
+                <button class="btn btn-secondary" onclick="hideReportHistory()">
+                  <i class="fas fa-times"></i>
+                  Close
+                </button>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Boxes</th>
+                    <th>Sales</th>
+                    <th>Total Cost</th>
+                    <th>Net Income</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                  <tr>
+                    <td colspan="6" class="text-center">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Edit Report Modal -->
+    <div class="modal" id="editReportModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Report</h3>
+          <button class="modal-close" onclick="closeEditModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editReportForm">
+            <input type="hidden" id="editReportId" />
+            <!-- Same form fields as main form but with edit prefix -->
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label">Report Date</label>
+                <input
+                  type="date"
+                  id="editReportDate"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-col">
+                <label class="form-label">Boxes</label>
+                <input
+                  type="number"
+                  id="editBoxes"
+                  class="form-control"
+                  min="0"
+                  step="1"
+                  required
+                />
+              </div>
+            </div>
+            <!-- Additional fields would be added here -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeEditModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveEditedReport()">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Number formatting -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/websocket.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/daily-report.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.10.9/dist/autoNumeric.min.js"></script>
+
+    <script>
+      // Reusable Peso formatter function
+      function initPesoFormatter(selector) {
+        return new AutoNumeric(selector, {
+          currencySymbol: "₱",
+          currencySymbolPlacement: "p", // p = prefix
+          decimalCharacter: ".",
+          digitGroupSeparator: ",",
+          decimalPlaces: 2,
+          unformatOnSubmit: true,
+        });
+      }
+      
+      // Reusable Number formatter function
+      function initNumFormatter(selector) {
+        return new AutoNumeric(selector, {
+          decimalCharacter: ".",
+          digitGroupSeparator: ",",
+          decimalPlaces: 0, 
+          unformatOnSubmit: true,
+        });
+      }
+
+      // Format inputs
+      initPesoFormatter("#salles");
+      initPesoFormatter("#fish");
+      initPesoFormatter("#freightAmount");
+      initPesoFormatter("#labor");
+    </script>
+  </body>
+</html>
