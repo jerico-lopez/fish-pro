@@ -37,10 +37,6 @@ class DailyReports
             'sales_per_box',
             'cost_per_box',
             'air_cargo',
-            'freight_msr',
-            'freight_bas_zam',
-            'freight_air_cargo',
-            'freight_t2_market'
         ];
         $values = [
             $data['user_id'] ?? null,
