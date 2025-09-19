@@ -72,7 +72,6 @@ function updateUsersTable() {
                     <strong>${user.username}</strong>
                     ${user.role === 'admin' ? '<i class="fas fa-crown text-warning" title="Admin"></i>' : ''}
                 </td>
-                <td>${user.email || '-'}</td>
                 <td>
                     <span class="badge" style="background: var(--${roleClass}-color); color: white; padding: 4px 8px; border-radius: 12px;">
                         <i class="fas ${user.role === 'admin' ? 'fa-user-shield' : 'fa-user'}"></i>
@@ -206,13 +205,12 @@ function setUserPermissions(permissions) {
 async function saveNewUser() {
     const formData = {
         username: document.getElementById('newUsername').value,
-        email: document.getElementById('newEmail').value,
         password: document.getElementById('newPassword').value,
         role: document.getElementById('newRole').value,
         permissions: getSelectedPermissions('permission-checkbox')
     };
     
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.username || !formData.password) {
         showUserError('Please fill in all required fields');
         return;
     }
@@ -258,7 +256,6 @@ async function editUser(userId) {
             
             document.getElementById('editUserId').value = result.data.id;
             document.getElementById('editUsername').value = result.data.username;
-            document.getElementById('editEmail').value = result.data.email || '';
             document.getElementById('editRole').value = result.data.role;
             document.getElementById('editPassword').value = '';
             
@@ -279,7 +276,6 @@ async function saveEditedUser() {
     const formData = {
         id: document.getElementById('editUserId').value,
         username: document.getElementById('editUsername').value,
-        email: document.getElementById('editEmail').value,
         role: document.getElementById('editRole').value,
         permissions: getSelectedPermissions('edit-permission-checkbox')
     };
@@ -289,7 +285,7 @@ async function saveEditedUser() {
         formData.password = password;
     }
     
-    if (!formData.username || !formData.email) {
+    if (!formData.username) {
         showUserError('Please fill in all required fields');
         return;
     }
@@ -369,7 +365,6 @@ function searchUsers() {
     const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
     const filteredUsers = allUsers.filter(user => 
         user.username.toLowerCase().includes(searchTerm) ||
-        (user.email && user.email.toLowerCase().includes(searchTerm)) ||
         user.role.toLowerCase().includes(searchTerm)
     );
     
@@ -393,7 +388,6 @@ function searchUsers() {
                     <strong>${user.username}</strong>
                     ${user.role === 'admin' ? '<i class="fas fa-crown text-warning" title="Admin"></i>' : ''}
                 </td>
-                <td>${user.email || '-'}</td>
                 <td>
                     <span class="badge" style="background: var(--${roleClass}-color); color: white; padding: 4px 8px; border-radius: 12px;">
                         <i class="fas ${user.role === 'admin' ? 'fa-user-shield' : 'fa-user'}"></i>

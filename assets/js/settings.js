@@ -54,7 +54,6 @@ async function loadSettings() {
             reportNotifications: true,
             userActivityAlerts: true,
             systemAlerts: true,
-            emailNotifications: false,
             sidebarBehavior: 'auto',
             animationSpeed: 'normal',
             sessionTimeout: '120',
@@ -91,7 +90,6 @@ function applySettingsToForm() {
     document.getElementById('reportNotifications').checked = currentSettings.reportNotifications;
     document.getElementById('userActivityAlerts').checked = currentSettings.userActivityAlerts;
     document.getElementById('systemAlerts').checked = currentSettings.systemAlerts;
-    document.getElementById('emailNotifications').checked = currentSettings.emailNotifications;
     
     // Appearance Settings
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -170,7 +168,6 @@ async function saveNotificationSettings() {
             reportNotifications: document.getElementById('reportNotifications').checked,
             userActivityAlerts: document.getElementById('userActivityAlerts').checked,
             systemAlerts: document.getElementById('systemAlerts').checked,
-            emailNotifications: document.getElementById('emailNotifications').checked
         };
         
         // Update current settings

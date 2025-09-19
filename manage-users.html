@@ -150,7 +150,6 @@
                             <thead>
                                 <tr>
                                     <th>Username</th>
-                                    <th>Email</th>
                                     <th>Role</th>
                                     <th>Permissions</th>
                                     <th>Status</th>
@@ -185,15 +184,11 @@
                             <input type="text" id="newUsername" class="form-control" required>
                         </div>
                         <div class="form-col">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="newEmail" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
                             <label class="form-label">Password</label>
                             <input type="password" id="newPassword" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-col">
                             <label class="form-label">Role</label>
                             <select id="newRole" class="form-control" required>
@@ -201,13 +196,14 @@
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
+                        <div class="form-col"></div>
                     </div>
                     <div class="form-row">
                         <div class="form-col">
                             <label class="form-label">Access Permissions</label>
                             <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
                                 <label class="permission-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" value="dashboard" checked disabled>
+                                    <input type="checkbox" value="dashboard" class="permission-checkbox" checked>
                                     <span>Dashboard</span>
                                 </label>
                                 <label class="permission-item" style="display: flex; align-items: center; gap: 8px;">
@@ -266,15 +262,11 @@
                             <input type="text" id="editUsername" class="form-control" required>
                         </div>
                         <div class="form-col">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="editEmail" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
                             <label class="form-label">New Password (leave blank to keep current)</label>
                             <input type="password" id="editPassword" class="form-control">
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-col">
                             <label class="form-label">Role</label>
                             <select id="editRole" class="form-control" required>
@@ -282,13 +274,14 @@
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
+                        <div class="form-col"></div>
                     </div>
                     <div class="form-row">
                         <div class="form-col">
                             <label class="form-label">Access Permissions</label>
                             <div class="permissions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
                                 <label class="permission-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" value="dashboard" checked disabled>
+                                    <input type="checkbox" value="dashboard" class="edit-permission-checkbox">
                                     <span>Dashboard</span>
                                 </label>
                                 <label class="permission-item" style="display: flex; align-items: center; gap: 8px;">

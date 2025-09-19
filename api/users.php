@@ -11,14 +11,14 @@ class Users {
     }
 
     public function getAll() {
-        $query = "SELECT id, username, email, role, permissions, created_at, is_active FROM " . $this->table_name . " ORDER BY created_at DESC";
+        $query = "SELECT id, username, role, permissions, created_at, is_active FROM " . $this->table_name . " ORDER BY created_at DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById($id) {
-        $query = "SELECT id, username, email, role, permissions, created_at, is_active FROM " . $this->table_name . " WHERE id = ?";
+        $query = "SELECT id, username, role, permissions, created_at, is_active FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -26,8 +26,8 @@ class Users {
 
     public function create($data) {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (username, password, email, role, permissions) 
-                  VALUES (?, ?, ?, ?, ?)";
+                  (username, password, role, permissions) 
+                  VALUES (?, ?, ?, ?)";
         
         $stmt = $this->conn->prepare($query);
         $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
@@ -36,7 +36,6 @@ class Users {
         return $stmt->execute([
             $data['username'],
             $hashed_password,
-            $data['email'],
             $data['role'],
             $permissions_json
         ]);
@@ -44,10 +43,9 @@ class Users {
 
     public function update($id, $data) {
         $query = "UPDATE " . $this->table_name . " 
-                  SET username=?, email=?, role=?, permissions=?";
+                  SET username=?, role=?, permissions=?";
         $params = [
             $data['username'],
-            $data['email'],
             $data['role'],
             json_encode($data['permissions'])
         ];
