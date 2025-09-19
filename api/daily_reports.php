@@ -231,32 +231,35 @@ class DailyReports
         return $stmt->execute([$id]);
     }
 
-    public function getAggregatedData($filters = [])
-    {
-        $query = "SELECT 
-                    SUM(boxes) as total_boxes,
-                    SUM(salles) as total_sales,
-                    SUM(cost + fish + ice_chest + plastic + tape + ice + labor) as total_expenses,
-                    SUM(cost) as total_cost,
-                    SUM(freight_msr + freight_bas_zam + freight_air_cargo + freight_t2_market) as total_freight_amount,
-                    SUM(salles - (cost + fish + ice_chest + plastic + tape + ice + labor + freight_msr + freight_bas_zam + freight_air_cargo + freight_t2_market)) as total_net_income,
-                    COUNT(*) as total_reports
-                  FROM " . $this->table_name . " WHERE 1=1";
-        $params = [];
+    // public function getAggregatedData($filters = [])
+    // {
+    //     $query = "SELECT 
+    //                 SUM(boxes) as total_boxes,
+    //                 SUM(salles) as total_sales,
+    //                 SUM(total_cost) as total_expenses,
+    //                 SUM(salles - (cost_per_box * boxes)) as total_net_income,
+    //                 COUNT(*) as total_reports
+    //               FROM " . $this->table_name . " WHERE 1=1";
+    //     $params = [];
 
-        if (isset($filters['date_from'])) {
-            $query .= " AND report_date >= ?";
-            $params[] = $filters['date_from'];
-        }
-        if (isset($filters['date_to'])) {
-            $query .= " AND report_date <= ?";
-            $params[] = $filters['date_to'];
-        }
+    //     if (isset($filters['date_from'])) {
+    //         $query .= " AND report_date >= ?";
+    //         $params[] = $filters['date_from'];
+    //     }
+    //     if (isset($filters['date_to'])) {
+    //         $query .= " AND report_date <= ?";
+    //         $params[] = $filters['date_to'];
+    //     }
 
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute($params);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    //     try {
+    //         $stmt = $this->conn->prepare($query);
+    //         $stmt->execute($params);
+    //         return $stmt->fetch(PDO::FETCH_ASSOC);
+    //     } catch (PDOException $e) {
+    //         return ['error' => $e->getMessage(), 'query' => $query, 'params' => $params];
+    //     }
+
+    // }
 }
 
 // Handle API requests
@@ -276,55 +279,56 @@ $raw = file_get_contents('php://input');
 $decoded = json_decode($raw, true);
 $input = is_array($decoded) ? $decoded : (($_POST ?? null) ?: []);
 
-function enrichReportsWithS3Msr($reports) {
+function enrichReportsWithS3Msr($reports)
+{
     foreach ($reports as &$report) {
-        $totalBoxes = isset($report['boxes']) ? (int)$report['boxes'] : 0;
-        $totalSales = isset($report['salles']) ? (float)$report['salles'] : 0;
-        $totalCost  = isset($report['total_cost']) ? (float)$report['total_cost'] : 0;
-        $airCargo   = isset($report['air_cargo']) ? (float)$report['air_cargo'] : 0;
+        $totalBoxes = isset($report['boxes']) ? (int) $report['boxes'] : 0;
+        $totalSales = isset($report['salles']) ? (float) $report['salles'] : 0;
+        $totalCost = isset($report['total_cost']) ? (float) $report['total_cost'] : 0;
+        $airCargo = isset($report['air_cargo']) ? (float) $report['air_cargo'] : 0;
 
         $salesPerBox = $totalBoxes > 0 ? $totalSales / $totalBoxes : 0;
-        $costPerBox  = $totalBoxes > 0 ? $totalCost / $totalBoxes : 0;
+        $costPerBox = $totalBoxes > 0 ? $totalCost / $totalBoxes : 0;
 
-        $s3Boxes  = floor($totalBoxes / 2);
+        $s3Boxes = floor($totalBoxes / 2);
         $msrBoxes = $totalBoxes - $s3Boxes;
 
         // ---- S3
-        $s3Cost          = $s3Boxes * $costPerBox;
-        $freightBasZam   = 350 * $s3Boxes;
+        $s3Cost = $s3Boxes * $costPerBox;
+        $freightBasZam = 350 * $s3Boxes;
         $freightAirCargo = $totalBoxes > 0 ? ($airCargo / $totalBoxes) * $s3Boxes : 0;
         $freightT2Market = 140 * $s3Boxes;
-        $s3Expenses      = $s3Cost + $freightBasZam + $freightT2Market + $freightAirCargo;
-        $s3Sales         = $s3Boxes * $salesPerBox;
-        $s3NetIncome     = $s3Sales - $s3Expenses;
+        $s3Expenses = $s3Cost + $freightBasZam + $freightT2Market + $freightAirCargo;
+        $s3Sales = $s3Boxes * $salesPerBox;
+        $s3NetIncome = $s3Sales - $s3Expenses;
 
         $report['s3'] = [
-            'boxes'     => $s3Boxes,
-            'sales'     => $s3Sales,
-            'cost'      => $s3Cost,
-            'expenses'  => $s3Expenses,
-            'net_income'=> $s3NetIncome,
-            'freight'   => [
-                'bas_zam'   => $freightBasZam,
+            'boxes' => $s3Boxes,
+            'sales' => $s3Sales,
+            'cost' => $s3Cost,
+            'expenses' => $s3Expenses,
+            'net_income' => $s3NetIncome,
+            'freight' => [
+                'bas_zam' => $freightBasZam,
                 'air_cargo' => $freightAirCargo,
                 't2_market' => $freightT2Market,
             ]
         ];
 
         // ---- MSR
-        $msrCost      = $msrBoxes * $costPerBox;
-        $msrFreight   = 1800 * $msrBoxes;
-        $msrExpenses  = $msrCost + $msrFreight;
-        $msrSales     = $msrBoxes * $salesPerBox;
+        $msrCost = $msrBoxes * $costPerBox;
+        $msrFreight = 1800 * $msrBoxes;
+        $msrExpenses = $msrCost + $msrFreight;
+        $msrSales = $msrBoxes * $salesPerBox;
         $msrNetIncome = $msrSales - $msrExpenses;
 
         $report['msr'] = [
-            'boxes'     => $msrBoxes,
-            'sales'     => $msrSales,
-            'cost'      => $msrCost,
-            'expenses'  => $msrExpenses,
-            'net_income'=> $msrNetIncome,
-            'freight'   => $msrFreight,
+            'boxes' => $msrBoxes,
+            'sales' => $msrSales,
+            'cost' => $msrCost,
+            'expenses' => $msrExpenses,
+            'net_income' => $msrNetIncome,
+            'freight' => $msrFreight,
         ];
     }
 
@@ -414,6 +418,17 @@ switch ($method) {
                     $data = $reports->getInventoryStock();
                     echo json_encode(array('success' => true, 'data' => $data));
                     break;
+                // case 'aggregated': // for dashboard
+                //     $filters = [];
+                //     if (isset($_GET['date_from']))
+                //         $filters['date_from'] = $_GET['date_from'];
+                //     if (isset($_GET['date_to']))
+                //         $filters['date_to'] = $_GET['date_to'];
+
+                //     $data = $reports->getAggregatedData($filters);
+                //     echo json_encode(array('success' => true, 'data' => $data));
+                //     break;
+
                 default:
                     $data = $reports->getAll();
                     $data = enrichReportsWithS3Msr($data);

@@ -447,47 +447,87 @@ function exportMSRData() {
         alert('No MSR data to export');
         return;
     }
-    
-    // Create CSV content
     const headers = [
-        'Date', 'Boxes', 'Sales', 'Expenses', 'Cost', 'Freight', 'Net Income', 'Profit Margin'
+        "Date", "Boxes", "Sales", "Expenses", "Cost", "Freight", "Net Income", "Net %"
     ];
-    
-    const csvContent = [
-        headers.join(','),
-        ...msrReports.map(report => {
-            const sales = parseFloat(report.salles) || 0;
-            const totalCost = parseFloat(report.total_cost) || 0;
-            const cost = parseFloat(report.cost) || 0;
-            const freight = totalCost * 0.08;
-            const totalExpenses = totalCost + freight;
-            const netIncome = sales - totalExpenses;
-            const profitMargin = sales > 0 ? (netIncome / sales) * 100 : 0;
-            
-            return [
-                report.report_date,
-                report.boxes || 0,
-                sales,
-                totalExpenses,
-                cost,
-                freight,
-                netIncome,
-                profitMargin.toFixed(2)
-            ].join(',');
-        })
-    ].join('\n');
-    
-    // Download CSV
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fish-pro-msr-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+
+    const data = msrReports.map(report => [
+        report.report_date,
+        report.boxes || 0,
+        report.msr.sales || 0,
+        report.msr.expenses || 0,
+        report.msr.cost || 0,
+        report.msr.freight || 0,
+        report.msr.net_income || 0,
+        report.msr.sales > 0 ? ((report.msr.net_income / report.msr.sales) * 100).toFixed(2) : 0
+    ]);
+
+    // Create worksheet + apply headers
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Format peso columns
+    const pesoCols = [2,3,4,5,6]; // 0-based index (sales, expenses, cost, freight, net income)
+    pesoCols.forEach(col => {
+        const range = XLSX.utils.decode_range(worksheet['!ref']);
+        for (let row = 1; row <= range.e.r; row++) {
+            const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
+            if (worksheet[cellRef]) {
+                worksheet[cellRef].z = '"₱"#,##0.00';
+            }
+        }
+    });
+
+    // Auto column width
+    const colWidths = headers.map((h, i) => ({ wch: Math.max(h.length + 2, 15) }));
+    worksheet['!cols'] = colWidths;
+
+    // Build workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "MSR Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "msr_report.xlsx");
 }
+// function exportMSRData() {
+//     if (msrReports.length === 0) {
+//         alert('No MSR data to export');
+//         return;
+//     }
+    
+//     // Create CSV content
+//     const headers = [
+//         'Date', 'Boxes', 'Sales', 'Expenses', 'Cost', 'Freight', 'Net Income', 'Profit Margin'
+//     ];
+    
+//     const csvContent = "\uFEFF" + [
+//         headers.join(','),
+//         ...msrReports.map(report => {
+//             return [
+//                 report.report_date,
+//                 report.boxes || 0,
+//                 `₱${(report.msr.sales || 0).toFixed(2)}`,
+//                 `₱${(report.msr.expenses || 0).toFixed(2)}`,
+//                 `₱${(report.msr.cost || 0).toFixed(2)}`,
+//                 `₱${(report.msr.freight || 0).toFixed(2)}`,
+//                 `₱${(report.msr.net_income || 0).toFixed(2)}`,
+//                 report.msr.sales > 0 
+//                     ? ((report.msr.net_income / report.msr.sales) * 100).toFixed(2) + "%" 
+//                     : "0.00%"
+//             ].join(',');
+//         })
+//     ].join('\n');
+    
+//     // Download CSV
+//     const blob = new Blob([csvContent], { type: 'text/csv' });
+//     const url = window.URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = `fish-pro-msr-${new Date().toISOString().split('T')[0]}.csv`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     window.URL.revokeObjectURL(url);
+// }
 
 function showMSRError(message) {
     console.error(message);

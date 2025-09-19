@@ -59,21 +59,31 @@ function updateDateTime() {
 
 async function loadDashboardStats() {
     try {
-        const response = await fetch('api/daily_reports.php?action=aggregated', {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+
+        // first and last day of current month
+        const dateFrom = `${year}-${month}-01`;
+        const lastDay = new Date(year, now.getMonth() + 1, 0).getDate();
+        const dateTo = `${year}-${month}-${lastDay}`;
+        const response = await fetch(`api/daily_reports.php?date_from=${dateFrom}&date_to=${dateTo}`, {
             method: 'GET'
         });
         
         const result = await response.json();
-        
-        if (result.success && result.data) {
-            const data = result.data;
-            
-            // Update stat cards
-            document.getElementById('totalReports').textContent = data.total_reports || 0;
-            document.getElementById('totalBoxes').textContent = data.total_boxes || 0;
-            document.getElementById('totalSales').textContent = formatCurrency(data.total_sales || 0);
-            document.getElementById('netIncome').textContent = formatCurrency(data.total_net_income || 0);
-        }
+        console.log(result);
+        const totals = result.data.reduce((acc, report) => {
+            acc.total_boxes += parseInt(report.boxes) || 0;
+            acc.total_sales += parseFloat(report.salles) || 0;
+            acc.total_net_income += parseFloat(report.msr.net_income + report.s3.net_income) || 0;
+            acc.total_reports++;
+            return acc;
+        }, { total_boxes: 0, total_sales: 0, total_net_income: 0, total_reports: 0});
+            document.getElementById('totalReports').textContent = totals.total_reports || 0;
+            document.getElementById('totalBoxes').textContent = totals.total_boxes || 0;
+            document.getElementById('totalSales').textContent = formatCurrency(totals.total_sales || 0);
+            document.getElementById('netIncome').textContent = formatCurrency(totals.total_net_income || 0);
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
     }
@@ -90,15 +100,7 @@ async function loadRecentReports() {
         
         if (result.success && result.data && result.data.length > 0) {
             tbody.innerHTML = result.data.map(report => {
-                const netIncome = (report.salles || 0) - (
-                    (report.cost || 0) + 
-                    (report.fish || 0) + 
-                    (report.ice_chest || 0) + 
-                    (report.plastic || 0) + 
-                    (report.tape || 0) + 
-                    (report.ice || 0) + 
-                    (report.labor || 0) + 
-                    (report.air_cargo || 0)
+                const netIncome = (parseFloat(report.msr.net_income) || 0) + (parseFloat(report.s3.net_income) || 0
                 );
                 
                 return `

@@ -433,56 +433,109 @@ function clearS3Filters() {
 }
 
 function exportS3Data() {
-    if (s3Reports.length === 0) {
+    if (s3Reports.length == 0) {
         alert('No S3 data to export');
         return;
     }
-    
-    // Create CSV content
+
     const headers = [
-        'Date', 'Boxes', 'Sales', 'Expenses', 'Cost', 'Freight Bas-Zam', 
-        'Air Cargo', 'Freight T2-Market', 'Net Income', 'Profit Margin'
+        "Date", "Boxes", "Sales", "Expenses", "Cost", 
+        "Freight Bas-Zam", "Air Cargo", "Freight T2-Market", 
+        "Net Income", "Net %"
     ];
-    
-    const csvContent = [
-        headers.join(','),
-        ...s3Reports.map(report => {
-            const sales = parseFloat(report.salles) || 0;
-            const totalCost = parseFloat(report.total_cost) || 0;
-            const airCargo = parseFloat(report.air_cargo) || 0;
-            const cost = parseFloat(report.cost) || 0;
-            const freightBazam = totalCost * 0.1;
-            const freightT2Market = totalCost * 0.05;
-            const totalExpenses = totalCost + airCargo + freightBazam + freightT2Market;
-            const netIncome = sales - totalExpenses;
-            const profitMargin = sales > 0 ? (netIncome / sales) * 100 : 0;
-            
-            return [
-                report.report_date,
-                report.boxes || 0,
-                sales,
-                totalExpenses,
-                cost,
-                freightBazam,
-                airCargo,
-                freightT2Market,
-                netIncome,
-                profitMargin.toFixed(2)
-            ].join(',');
-        })
-    ].join('\n');
-    
-    // Download CSV
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fish-pro-s3-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+
+    const data = s3Reports.map(report => [
+        report.report_date,
+        report.boxes || 0,
+        report.s3.sales || 0,
+        report.s3.expenses || 0,
+        report.s3.cost || 0,
+        report.s3.freight?.bas_zam || 0,
+        report.s3.freight?.air_cargo || 0,
+        report.s3.freight?.t2_market || 0,
+        report.s3.net_income || 0,
+        report.s3.sales > 0 ? ((report.s3.net_income / report.s3.sales) * 100).toFixed(2) : 0
+    ]);
+
+    // Create worksheet + apply headers
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Format peso columns (sales, expenses, cost, all freight, net income)
+    const pesoCols = [2,3,4,5,6,7,8]; // 0-based column indexes
+    pesoCols.forEach(col => {
+        const range = XLSX.utils.decode_range(worksheet['!ref']);
+        for (let row = 1; row <= range.e.r; row++) {
+            const cellRef = XLSX.utils.encode_cell({ r: row, c: col });
+            if (worksheet[cellRef]) {
+                worksheet[cellRef].z = '"₱"#,##0.00';
+            }
+        }
+    });
+
+    // Auto column width
+    const colWidths = headers.map((h, i) => ({ wch: Math.max(h.length + 2, 15) }));
+    worksheet['!cols'] = colWidths;
+
+    // Build workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "S3 Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "s3_report.xlsx");
 }
+
+
+// function exportS3Data() {
+//     if (s3Reports.length === 0) {
+//         alert('No S3 data to export');
+//         return;
+//     }
+    
+//     // Create CSV content
+//     const headers = [
+//         'Date', 'Boxes', 'Sales', 'Expenses', 'Cost', 'Freight Bas-Zam', 
+//         'Air Cargo', 'Freight T2-Market', 'Net Income', 'Profit Margin'
+//     ];
+    
+//     const csvContent = [
+//         headers.join(','),
+//         ...s3Reports.map(report => {
+//             const sales = parseFloat(report.salles) || 0;
+//             const totalCost = parseFloat(report.total_cost) || 0;
+//             const airCargo = parseFloat(report.air_cargo) || 0;
+//             const cost = parseFloat(report.cost) || 0;
+//             const freightBazam = totalCost * 0.1;
+//             const freightT2Market = totalCost * 0.05;
+//             const totalExpenses = totalCost + airCargo + freightBazam + freightT2Market;
+//             const netIncome = sales - totalExpenses;
+//             const profitMargin = sales > 0 ? (netIncome / sales) * 100 : 0;
+            
+//             return [
+//                 report.report_date,
+//                 report.boxes || 0,
+//                 sales,
+//                 totalExpenses,
+//                 cost,
+//                 freightBazam,
+//                 airCargo,
+//                 freightT2Market,
+//                 netIncome,
+//                 profitMargin.toFixed(2)
+//             ].join(',');
+//         })
+//     ].join('\n');
+    
+//     // Download CSV
+//     const blob = new Blob([csvContent], { type: 'text/csv' });
+//     const url = window.URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = `fish-pro-s3-${new Date().toISOString().split('T')[0]}.csv`;
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     window.URL.revokeObjectURL(url);
+// }
 
 function showS3Error(message) {
     console.error(message);

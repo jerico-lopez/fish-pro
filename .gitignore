@@ -1,5 +1,5 @@
 /dist
 /config
-/node_modules
+/websocket/node_modules
 .env
 .log
