@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ms3_msr: 'ms3-msr.html',
                             s3: 's3.html',
                             msr: 'msr.html',
+                            inventory: 'inventory.html',
                             user_management: 'manage-users.html',
                             setting: 'settings.html'
                         };
