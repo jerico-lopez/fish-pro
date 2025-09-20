@@ -1,286 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fish Pro - MS3 & MSR</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-</head>
-<body data-theme="light">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/css/style.css" rel="stylesheet" />
+  </head>
+  <body data-theme="light">
     <div class="dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo">
-                <h3>Fish Pro</h3>
-                <p class="text-muted">Management System</p>
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo" />
+          <h3>Fish Pro</h3>
+          <p class="text-muted">Management System</p>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-item">
+            <a
+              href="dashboard.html"
+              class="nav-link"
+              data-permission="dashboard"
+            >
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="daily-report.html"
+              class="nav-link"
+              data-permission="daily_report"
+            >
+              <i class="fas fa-file-alt"></i>
+              <span>Daily Fish Report</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="ms3-msr.html" class="nav-link active">
+              <i class="fas fa-chart-line"></i>
+              <span>MS3 & MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="s3.html" class="nav-link" data-permission="s3">
+              <i class="fas fa-box"></i>
+              <span>S3</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="msr.html" class="nav-link" data-permission="msr">
+              <i class="fas fa-receipt"></i>
+              <span>MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="inventory.html"
+              class="nav-link"
+              data-permission="inventory"
+            >
+              <i class="fas fa-warehouse"></i>
+              <span>Inventory</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="manage-users.html"
+              class="nav-link"
+              data-permission="manage_users"
+            >
+              <i class="fas fa-users"></i>
+              <span>Manage Users</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="settings.html" class="nav-link" data-permission="settings">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1 class="page-title">MS3 & MSR Analysis</h1>
+          </div>
+
+          <div class="header-right">
+            <button class="theme-toggle" onclick="toggleTheme()">
+              <i class="fas fa-moon"></i>
+            </button>
+            <button class="notification-btn" onclick="showNotifications()">
+              <i class="fas fa-bell"></i>
+              <span
+                class="notification-badge"
+                id="notificationBadge"
+                style="display: none"
+                >0</span
+              >
+            </button>
+            <button class="user-menu-btn" onclick="showUserMenu()">
+              <i class="fas fa-user-circle"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- Filter Section -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Filter Reports</h2>
+              <button class="btn btn-secondary" onclick="exportData()">
+                <i class="fas fa-download"></i>
+                Export Data
+              </button>
             </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-item">
-                    <a href="dashboard.html" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="daily-report.html" class="nav-link" data-permission="daily_report">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Daily Fish Report</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="ms3-msr.html" class="nav-link active">
-                        <i class="fas fa-chart-line"></i>
-                        <span>MS3 & MSR</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="s3.html" class="nav-link" data-permission="s3">
-                        <i class="fas fa-box"></i>
-                        <span>S3</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="msr.html" class="nav-link" data-permission="msr">
-                        <i class="fas fa-receipt"></i>
-                        <span>MSR</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="inventory.html" class="nav-link" data-permission="inventory">
-                        <i class="fas fa-warehouse"></i>
-                        <span>Inventory</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="manage-users.html" class="nav-link" data-permission="manage_users">
-                        <i class="fas fa-users"></i>
-                        <span>Manage Users</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="settings.html" class="nav-link" data-permission="settings">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <h1 class="page-title">MS3 & MSR Analysis</h1>
-                </div>
-                
-                <div class="header-right">
-                    <button class="theme-toggle" onclick="toggleTheme()">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="notification-btn" onclick="showNotifications()">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
-                    </button>
-                    <button class="user-menu-btn" onclick="showUserMenu()">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <div class="content">
-                <!-- Filter Section -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Filter Reports</h2>
-                        <button class="btn btn-secondary" onclick="exportData()">
-                            <i class="fas fa-download"></i>
-                            Export Data
-                        </button>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-col">
-                            <label class="form-label">From Date</label>
-                            <input type="date" id="filterFromDate" class="form-control">
-                        </div>
-                        <div class="form-col">
-                            <label class="form-label">To Date</label>
-                            <input type="date" id="filterToDate" class="form-control">
-                        </div>
-                        <div class="form-col d-flex align-center" style="gap: 10px; margin-top: 2rem;">
-                            <button class="btn btn-primary" onclick="applyFilters()">
-                                <i class="fas fa-filter"></i>
-                                Apply Filter
-                            </button>
-                            <button class="btn btn-secondary" onclick="clearFilters()">
-                                <i class="fas fa-times"></i>
-                                Clear
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Summary Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="stat-value" id="totalBoxesMS3">0</div>
-                        <div class="stat-label">Total Boxes</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-peso-sign"></i>
-                        </div>
-                        <div class="stat-value" id="totalSalesMS3">₱0</div>
-                        <div class="stat-label">Total Sales</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <div class="stat-value" id="totalExpensesMS3">₱0</div>
-                        <div class="stat-label">Total Expenses</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="stat-value" id="netIncomeMS3">₱0</div>
-                        <div class="stat-label">Net Income</div>
-                    </div>
-                </div>
-
-                <!-- Detailed Reports Table -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Detailed Reports</h2>
-                        <div class="d-flex" style="gap: 10px;">
-                            <button class="btn btn-info btn-sm" onclick="toggleView('summary')">
-                                <i class="fas fa-chart-bar"></i>
-                                Summary View
-                            </button>
-                            <button class="btn btn-info btn-sm" onclick="toggleView('detailed')">
-                                <i class="fas fa-list"></i>
-                                Detailed View
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Boxes</th>
-                                    <th>Sales</th>
-                                    <th>Cost</th>
-                                    <th>Fish</th>
-                                    <th>Ice Chest</th>
-                                    <th>Plastic</th>
-                                    <th>Tape</th>
-                                    <th>Ice</th>
-                                    <th>Labor</th>
-                                    <th>Total Cost</th>
-                                    <th>Sales/Box</th>
-                                    <th>Cost/Box</th>
-                                    <th>Air Cargo</th>
-                                    <th>Net Income</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reportsTableBody">
-                                <tr>
-                                    <td colspan="15" class="text-center">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Charts Section -->
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Sales vs Expenses Trend</h3>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="salesExpensesChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-col">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Profit Margin Analysis</h3>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="profitMarginChart" width="400" height="200"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cost Breakdown -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Cost Breakdown Analysis</h3>
-                    </div>
-                    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalFishCost">₱0</div>
-                            <div class="stat-label">Fish Cost</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalIceChestCost">₱0</div>
-                            <div class="stat-label">Ice Chest</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalPlasticCost">₱0</div>
-                            <div class="stat-label">Plastic</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalTapeCost">₱0</div>
-                            <div class="stat-label">Tape</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalIceCost">₱0</div>
-                            <div class="stat-label">Ice</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalLaborCost">₱0</div>
-                            <div class="stat-label">Labor</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalAirCargoCost">₱0</div>
-                            <div class="stat-label">Air Cargo</div>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label">From Date</label>
+                <input type="date" id="filterFromDate" class="form-control" />
+              </div>
+              <div class="form-col">
+                <label class="form-label">To Date</label>
+                <input type="date" id="filterToDate" class="form-control" />
+              </div>
+              <div
+                class="form-col d-flex align-center"
+                style="gap: 10px; margin-top: 2rem"
+              >
+                <button class="btn btn-primary" onclick="applyFilters()">
+                  <i class="fas fa-filter"></i>
+                  Apply Filter
+                </button>
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                  <i class="fas fa-times"></i>
+                  Clear
+                </button>
+              </div>
             </div>
-        </main>
+          </div>
+
+          <!-- Summary Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="stat-value" id="totalBoxesMS3">0</div>
+              <div class="stat-label">Total Boxes</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-peso-sign"></i>
+              </div>
+              <div class="stat-value" id="totalSalesMS3">₱0</div>
+              <div class="stat-label">Total Sales</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <div class="stat-value" id="totalExpensesMS3">₱0</div>
+              <div class="stat-label">Total Expenses</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stat-value" id="netIncomeMS3">₱0</div>
+              <div class="stat-label">Net Income</div>
+            </div>
+          </div>
+
+          <!-- Detailed Reports Table -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Detailed Reports</h2>
+              <div class="d-flex" style="gap: 10px">
+                <button
+                  class="btn btn-info btn-sm"
+                  onclick="toggleView('summary')"
+                >
+                  <i class="fas fa-chart-bar"></i>
+                  Summary View
+                </button>
+                <button
+                  class="btn btn-info btn-sm"
+                  onclick="toggleView('detailed')"
+                >
+                  <i class="fas fa-list"></i>
+                  Detailed View
+                </button>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Boxes</th>
+                    <th>Sales</th>
+                    <th>Cost</th>
+                    <th>Fish</th>
+                    <th>Ice Chest</th>
+                    <th>Plastic</th>
+                    <th>Tape</th>
+                    <th>Ice</th>
+                    <th>Labor</th>
+                    <th>Total Cost</th>
+                    <th>Sales/Box</th>
+                    <th>Cost/Box</th>
+                    <th>Air Cargo</th>
+                    <th>Net Income</th>
+                  </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                  <tr>
+                    <td colspan="15" class="text-center">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="form-row">
+            <div class="form-col">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Sales vs Expenses Trend</h3>
+                </div>
+                <div class="card-body">
+                  <canvas
+                    id="salesExpensesChart"
+                    width="400"
+                    height="200"
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-col">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Profit Margin Analysis</h3>
+                </div>
+                <div class="card-body">
+                  <canvas
+                    id="profitMarginChart"
+                    width="400"
+                    height="200"
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cost Breakdown -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Cost Breakdown Analysis</h3>
+            </div>
+            <div
+              class="stats-grid"
+              style="
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+              "
+            >
+              <div class="stat-card">
+                <div class="stat-value" id="totalFishCost">₱0</div>
+                <div class="stat-label">Fish Cost</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalIceChestCost">₱0</div>
+                <div class="stat-label">Ice Chest</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalPlasticCost">₱0</div>
+                <div class="stat-label">Plastic</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalTapeCost">₱0</div>
+                <div class="stat-label">Tape</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalIceCost">₱0</div>
+                <div class="stat-label">Ice</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalLaborCost">₱0</div>
+                <div class="stat-label">Labor</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" id="totalAirCargoCost">₱0</div>
+                <div class="stat-label">Air Cargo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
+
+    <!-- Loader Spinner -->
+    <div
+      id="loader"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+      "
+    >
+      <div
+        class="spinner"
+        style="
+          border: 8px solid #f3f3f3;
+          border-top: 8px solid #3498db;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          animation: spin 1s linear infinite;
+        "
+      ></div>
+    </div>
+    <style>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/websocket.js"></script>
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/ms3-msr.js"></script>
-</body>
+    <script src="assets/js/sidebar.js"></script>
+  </body>
 </html>

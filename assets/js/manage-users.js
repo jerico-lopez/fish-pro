@@ -182,13 +182,7 @@ function resetPermissionCheckboxes() {
 
 function getSelectedPermissions(checkboxClass) {
     const checkboxes = document.querySelectorAll(`.${checkboxClass}:checked`);
-    const permissions = Array.from(checkboxes).map(cb => cb.value);
-    
-    // Always include dashboard
-    if (!permissions.includes('dashboard')) {
-        permissions.unshift('dashboard');
-    }
-    
+    const permissions = Array.from(checkboxes).map(cb => cb.value);    
     return permissions;
 }
 

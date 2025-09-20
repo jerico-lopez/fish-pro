@@ -122,13 +122,36 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.innerHTML = '<div class="spinner"></div> Logging in...';
             submitBtn.disabled = true;
             
-            try {
+           try {
                 const result = await login(username, password);
-                
+
                 if (result.success) {
                     showAlert('Login successful! Redirecting...', 'success');
+
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        const permissions = result.user.permissions || [];
+
+                        // Define mapping between permission and page
+                        const pageMap = {
+                            dashboard: 'dashboard.html',
+                            daily_report: 'daily-report.html',
+                            ms3_msr: 'ms3-msr.html',
+                            s3: 's3.html',
+                            msr: 'msr.html',
+                            user_management: 'manage-users.html',
+                            setting: 'settings.html'
+                        };
+
+                        // Find the first permission that has a mapped page
+                        let redirectPage = 'dashboard.html'; // fallback
+                        for (let perm of permissions) {
+                            if (pageMap[perm]) {
+                                redirectPage = pageMap[perm];
+                                break;
+                            }
+                        }
+
+                        window.location.href = redirectPage;
                     }, 1000);
                 } else {
                     showAlert(result.message || 'Login failed');

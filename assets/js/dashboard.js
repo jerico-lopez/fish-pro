@@ -180,19 +180,6 @@ function updateNotificationBadge(count = null) {
     }
 }
 
-async function setupNavigationPermissions() {
-    const navLinks = document.querySelectorAll('.nav-link[data-permission]');
-    
-    for (const link of navLinks) {
-        const permission = link.getAttribute('data-permission');
-        const hasPermission = await checkPermission(permission);
-        
-        if (!hasPermission) {
-            link.style.display = 'none';
-        }
-    }
-}
-
 // Sidebar toggle
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');

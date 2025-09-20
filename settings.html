@@ -1,432 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fish Pro - Settings</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
-</head>
-<body data-theme="light">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/css/style.css" rel="stylesheet" />
+  </head>
+  <body data-theme="light">
     <div class="dashboard">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo">
-                <h3>Fish Pro</h3>
-                <p class="text-muted">Management System</p>
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <img src="images/logo.jpg" alt="Fish Pro Logo" class="logo" />
+          <h3>Fish Pro</h3>
+          <p class="text-muted">Management System</p>
+        </div>
+
+        <nav class="sidebar-nav">
+          <div class="nav-item">
+            <a
+              href="dashboard.html"
+              class="nav-link"
+              data-permission="dashboard"
+            >
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="daily-report.html"
+              class="nav-link"
+              data-permission="daily_report"
+            >
+              <i class="fas fa-file-alt"></i>
+              <span>Daily Fish Report</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="ms3-msr.html" class="nav-link" data-permission="ms3_msr">
+              <i class="fas fa-chart-line"></i>
+              <span>MS3 & MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="s3.html" class="nav-link" data-permission="s3">
+              <i class="fas fa-box"></i>
+              <span>S3</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="msr.html" class="nav-link" data-permission="msr">
+              <i class="fas fa-receipt"></i>
+              <span>MSR</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="inventory.html"
+              class="nav-link"
+              data-permission="inventory"
+            >
+              <i class="fas fa-warehouse"></i>
+              <span>Inventory</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a
+              href="manage-users.html"
+              class="nav-link"
+              data-permission="manage_users"
+            >
+              <i class="fas fa-users"></i>
+              <span>Manage Users</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="settings.html" class="nav-link active">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <h1 class="page-title">Settings</h1>
+          </div>
+
+          <div class="header-right">
+            <button class="theme-toggle" onclick="toggleTheme()">
+              <i class="fas fa-moon"></i>
+            </button>
+            <button class="notification-btn" onclick="showNotifications()">
+              <i class="fas fa-bell"></i>
+              <span
+                class="notification-badge"
+                id="notificationBadge"
+                style="display: none"
+                >0</span
+              >
+            </button>
+            <button class="user-menu-btn" onclick="showUserMenu()">
+              <i class="fas fa-user-circle"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+          <!-- General Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-cog"></i>
+                General Settings
+              </h2>
             </div>
-            
-            <nav class="sidebar-nav">
-                <div class="nav-item">
-                    <a href="dashboard.html" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
+            <div class="card-body">
+              <form id="generalSettingsForm">
+                <div class="form-row">
+                  <div class="form-col">
+                    <label class="form-label">Company Name</label>
+                    <input
+                      type="text"
+                      id="companyName"
+                      class="form-control"
+                      value="Fish Pro"
+                    />
+                  </div>
+                  <div class="form-col">
+                    <label class="form-label">Currency</label>
+                    <select id="currency" class="form-control">
+                      <option value="PHP">Philippine Peso (₱)</option>
+                      <option value="USD">US Dollar ($)</option>
+                      <option value="EUR">Euro (€)</option>
+                      <option value="JPY">Japanese Yen (¥)</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="nav-item">
-                    <a href="daily-report.html" class="nav-link" data-permission="daily_report">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Daily Fish Report</span>
-                    </a>
+                <div class="form-row">
+                  <div class="form-col">
+                    <label class="form-label">Timezone</label>
+                    <select id="timezone" class="form-control">
+                      <option value="Asia/Manila">Asia/Manila (GMT+8)</option>
+                      <option value="UTC">UTC (GMT+0)</option>
+                      <option value="America/New_York">
+                        America/New_York (EST)
+                      </option>
+                      <option value="Europe/London">Europe/London (GMT)</option>
+                      <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                    </select>
+                  </div>
+                  <div class="form-col">
+                    <label class="form-label">Date Format</label>
+                    <select id="dateFormat" class="form-control">
+                      <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                      <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                      <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="nav-item">
-                    <a href="ms3-msr.html" class="nav-link" data-permission="ms3_msr">
-                        <i class="fas fa-chart-line"></i>
-                        <span>MS3 & MSR</span>
-                    </a>
+                <div class="form-row">
+                  <div class="form-col">
+                    <label class="form-label">Language</label>
+                    <select id="language" class="form-control">
+                      <option value="en">English</option>
+                      <option value="fil">Filipino</option>
+                      <option value="es">Spanish</option>
+                    </select>
+                  </div>
+                  <div class="form-col">
+                    <label class="form-label">Items per Page</label>
+                    <select id="itemsPerPage" class="form-control">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="nav-item">
-                    <a href="s3.html" class="nav-link" data-permission="s3">
-                        <i class="fas fa-box"></i>
-                        <span>S3</span>
-                    </a>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveGeneralSettings()"
+                  >
+                    <i class="fas fa-save"></i>
+                    Save General Settings
+                  </button>
                 </div>
-                <div class="nav-item">
-                    <a href="msr.html" class="nav-link" data-permission="msr">
-                        <i class="fas fa-receipt"></i>
-                        <span>MSR</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="inventory.html" class="nav-link" data-permission="inventory">
-                        <i class="fas fa-warehouse"></i>
-                        <span>Inventory</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="manage-users.html" class="nav-link" data-permission="manage_users">
-                        <i class="fas fa-users"></i>
-                        <span>Manage Users</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="settings.html" class="nav-link active">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" class="nav-link" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <h1 class="page-title">Settings</h1>
-                </div>
-                
-                <div class="header-right">
-                    <button class="theme-toggle" onclick="toggleTheme()">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="notification-btn" onclick="showNotifications()">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
-                    </button>
-                    <button class="user-menu-btn" onclick="showUserMenu()">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Content -->
-            <div class="content">
-                <!-- General Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-cog"></i>
-                            General Settings
-                        </h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="generalSettingsForm">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="form-label">Company Name</label>
-                                    <input type="text" id="companyName" class="form-control" value="Fish Pro">
-                                </div>
-                                <div class="form-col">
-                                    <label class="form-label">Currency</label>
-                                    <select id="currency" class="form-control">
-                                        <option value="PHP">Philippine Peso (₱)</option>
-                                        <option value="USD">US Dollar ($)</option>
-                                        <option value="EUR">Euro (€)</option>
-                                        <option value="JPY">Japanese Yen (¥)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="form-label">Timezone</label>
-                                    <select id="timezone" class="form-control">
-                                        <option value="Asia/Manila">Asia/Manila (GMT+8)</option>
-                                        <option value="UTC">UTC (GMT+0)</option>
-                                        <option value="America/New_York">America/New_York (EST)</option>
-                                        <option value="Europe/London">Europe/London (GMT)</option>
-                                        <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                                    </select>
-                                </div>
-                                <div class="form-col">
-                                    <label class="form-label">Date Format</label>
-                                    <select id="dateFormat" class="form-control">
-                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="form-label">Language</label>
-                                    <select id="language" class="form-control">
-                                        <option value="en">English</option>
-                                        <option value="fil">Filipino</option>
-                                        <option value="es">Spanish</option>
-                                    </select>
-                                </div>
-                                <div class="form-col">
-                                    <label class="form-label">Items per Page</label>
-                                    <select id="itemsPerPage" class="form-control">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-primary" onclick="saveGeneralSettings()">
-                                    <i class="fas fa-save"></i>
-                                    Save General Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Notification Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-bell"></i>
-                            Notification Settings
-                        </h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="notificationSettingsForm">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="enableNotifications" checked>
-                                            <span class="checkmark"></span>
-                                            Enable Real-time Notifications
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="inventoryAlerts" checked>
-                                            <span class="checkmark"></span>
-                                            Inventory Stock Alerts
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="reportNotifications" checked>
-                                            <span class="checkmark"></span>
-                                            New Report Notifications
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="userActivityAlerts" checked>
-                                            <span class="checkmark"></span>
-                                            User Activity Alerts
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="systemAlerts" checked>
-                                            <span class="checkmark"></span>
-                                            System Alerts
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-primary" onclick="saveNotificationSettings()">
-                                    <i class="fas fa-save"></i>
-                                    Save Notification Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Appearance Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-palette"></i>
-                            Appearance Settings
-                        </h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="appearanceSettingsForm">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="form-label">Theme</label>
-                                    <div class="theme-selector">
-                                        <label class="theme-option">
-                                            <input type="radio" name="theme" value="light" id="lightTheme">
-                                            <div class="theme-preview light-preview">
-                                                <div class="theme-header"></div>
-                                                <div class="theme-sidebar"></div>
-                                                <div class="theme-content"></div>
-                                            </div>
-                                            <span>Light Theme</span>
-                                        </label>
-                                        <label class="theme-option">
-                                            <input type="radio" name="theme" value="dark" id="darkTheme">
-                                            <div class="theme-preview dark-preview">
-                                                <div class="theme-header"></div>
-                                                <div class="theme-sidebar"></div>
-                                                <div class="theme-content"></div>
-                                            </div>
-                                            <span>Dark Theme</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-col">
-                                    <label class="form-label">Sidebar Behavior</label>
-                                    <select id="sidebarBehavior" class="form-control">
-                                        <option value="expanded">Always Expanded</option>
-                                        <option value="collapsed">Always Collapsed</option>
-                                        <option value="auto">Auto (Responsive)</option>
-                                    </select>
-                                    
-                                    <label class="form-label" style="margin-top: 15px;">Animation Speed</label>
-                                    <select id="animationSpeed" class="form-control">
-                                        <option value="fast">Fast</option>
-                                        <option value="normal">Normal</option>
-                                        <option value="slow">Slow</option>
-                                        <option value="none">None</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-primary" onclick="saveAppearanceSettings()">
-                                    <i class="fas fa-save"></i>
-                                    Save Appearance Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Security Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-shield-alt"></i>
-                            Security Settings
-                        </h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="securitySettingsForm">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <label class="form-label">Session Timeout (minutes)</label>
-                                    <select id="sessionTimeout" class="form-control">
-                                        <option value="30">30 minutes</option>
-                                        <option value="60">1 hour</option>
-                                        <option value="120">2 hours</option>
-                                        <option value="240">4 hours</option>
-                                        <option value="480">8 hours</option>
-                                    </select>
-                                </div>
-                                <div class="form-col">
-                                    <label class="form-label">Password Policy</label>
-                                    <select id="passwordPolicy" class="form-control">
-                                        <option value="basic">Basic (6+ characters)</option>
-                                        <option value="medium">Medium (8+ chars, mixed case)</option>
-                                        <option value="strong">Strong (12+ chars, symbols)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="requirePasswordChange">
-                                            <span class="checkmark"></span>
-                                            Require Password Change Every 90 Days
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="enableTwoFactor">
-                                            <span class="checkmark"></span>
-                                            Enable Two-Factor Authentication (Coming Soon)
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-col">
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="logUserActivity" checked>
-                                            <span class="checkmark"></span>
-                                            Log User Activity
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="enableLoginAttempts" checked>
-                                            <span class="checkmark"></span>
-                                            Lock Account After Failed Attempts
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-actions">
-                                <button type="button" class="btn btn-primary" onclick="saveSecuritySettings()">
-                                    <i class="fas fa-save"></i>
-                                    Save Security Settings
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- System Information -->
-                <!--<div class="card">-->
-                <!--    <div class="card-header">-->
-                <!--        <h2 class="card-title">-->
-                <!--            <i class="fas fa-info-circle"></i>-->
-                <!--            System Information-->
-                <!--        </h2>-->
-                <!--    </div>-->
-                <!--    <div class="card-body">-->
-                <!--        <div class="system-info">-->
-                <!--            <div class="info-row">-->
-                <!--                <span class="info-label">Application Version:</span>-->
-                <!--                <span class="info-value">Fish Pro v1.0.0</span>-->
-                <!--            </div>-->
-                <!--            <div class="info-row">-->
-                <!--                <span class="info-label">Database Version:</span>-->
-                <!--                <span class="info-value" id="dbVersion">Loading...</span>-->
-                <!--            </div>-->
-                <!--            <div class="info-row">-->
-                <!--                <span class="info-label">WebSocket Status:</span>-->
-                <!--                <span class="info-value" id="wsStatus">-->
-                <!--                    <span class="status-indicator" id="wsIndicator"></span>-->
-                <!--                    <span id="wsStatusText">Checking...</span>-->
-                <!--                </span>-->
-                <!--            </div>-->
-                <!--            <div class="info-row">-->
-                <!--                <span class="info-label">Last Backup:</span>-->
-                <!--                <span class="info-value">Manual backup required</span>-->
-                <!--            </div>-->
-                <!--            <div class="info-row">-->
-                <!--                <span class="info-label">Storage Used:</span>-->
-                <!--                <span class="info-value" id="storageUsed">Calculating...</span>-->
-                <!--            </div>-->
-                <!--        </div>-->
-                        
-                <!--        <div class="system-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">-->
-                <!--            <button class="btn btn-info" onclick="testConnection()">-->
-                <!--                <i class="fas fa-wifi"></i>-->
-                <!--                Test Connection-->
-                <!--            </button>-->
-                <!--            <button class="btn btn-warning" onclick="clearCache()">-->
-                <!--                <i class="fas fa-broom"></i>-->
-                <!--                Clear Cache-->
-                <!--            </button>-->
-                <!--            <button class="btn btn-success" onclick="exportData()">-->
-                <!--                <i class="fas fa-download"></i>-->
-                <!--                Export Data-->
-                <!--            </button>-->
-                <!--        </div>-->
-                <!--    </div>-->
-                <!--</div>-->
+              </form>
             </div>
-        </main>
+          </div>
+
+          <!-- Notification Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-bell"></i>
+                Notification Settings
+              </h2>
+            </div>
+            <div class="card-body">
+              <form id="notificationSettingsForm">
+                <div class="form-row">
+                  <div class="form-col">
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          id="enableNotifications"
+                          checked
+                        />
+                        <span class="checkmark"></span>
+                        Enable Real-time Notifications
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="inventoryAlerts" checked />
+                        <span class="checkmark"></span>
+                        Inventory Stock Alerts
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          id="reportNotifications"
+                          checked
+                        />
+                        <span class="checkmark"></span>
+                        New Report Notifications
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-col">
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          id="userActivityAlerts"
+                          checked
+                        />
+                        <span class="checkmark"></span>
+                        User Activity Alerts
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="systemAlerts" checked />
+                        <span class="checkmark"></span>
+                        System Alerts
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveNotificationSettings()"
+                  >
+                    <i class="fas fa-save"></i>
+                    Save Notification Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Appearance Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-palette"></i>
+                Appearance Settings
+              </h2>
+            </div>
+            <div class="card-body">
+              <form id="appearanceSettingsForm">
+                <div class="form-row">
+                  <div class="form-col">
+                    <label class="form-label">Theme</label>
+                    <div class="theme-selector">
+                      <label class="theme-option">
+                        <input
+                          type="radio"
+                          name="theme"
+                          value="light"
+                          id="lightTheme"
+                        />
+                        <div class="theme-preview light-preview">
+                          <div class="theme-header"></div>
+                          <div class="theme-sidebar"></div>
+                          <div class="theme-content"></div>
+                        </div>
+                        <span>Light Theme</span>
+                      </label>
+                      <label class="theme-option">
+                        <input
+                          type="radio"
+                          name="theme"
+                          value="dark"
+                          id="darkTheme"
+                        />
+                        <div class="theme-preview dark-preview">
+                          <div class="theme-header"></div>
+                          <div class="theme-sidebar"></div>
+                          <div class="theme-content"></div>
+                        </div>
+                        <span>Dark Theme</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-col">
+                    <label class="form-label">Sidebar Behavior</label>
+                    <select id="sidebarBehavior" class="form-control">
+                      <option value="expanded">Always Expanded</option>
+                      <option value="collapsed">Always Collapsed</option>
+                      <option value="auto">Auto (Responsive)</option>
+                    </select>
+
+                    <label class="form-label" style="margin-top: 15px"
+                      >Animation Speed</label
+                    >
+                    <select id="animationSpeed" class="form-control">
+                      <option value="fast">Fast</option>
+                      <option value="normal">Normal</option>
+                      <option value="slow">Slow</option>
+                      <option value="none">None</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveAppearanceSettings()"
+                  >
+                    <i class="fas fa-save"></i>
+                    Save Appearance Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Security Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-shield-alt"></i>
+                Security Settings
+              </h2>
+            </div>
+            <div class="card-body">
+              <form id="securitySettingsForm">
+                <div class="form-row">
+                  <div class="form-col">
+                    <label class="form-label">Session Timeout (minutes)</label>
+                    <select id="sessionTimeout" class="form-control">
+                      <option value="30">30 minutes</option>
+                      <option value="60">1 hour</option>
+                      <option value="120">2 hours</option>
+                      <option value="240">4 hours</option>
+                      <option value="480">8 hours</option>
+                    </select>
+                  </div>
+                  <div class="form-col">
+                    <label class="form-label">Password Policy</label>
+                    <select id="passwordPolicy" class="form-control">
+                      <option value="basic">Basic (6+ characters)</option>
+                      <option value="medium">
+                        Medium (8+ chars, mixed case)
+                      </option>
+                      <option value="strong">
+                        Strong (12+ chars, symbols)
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-col">
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="requirePasswordChange" />
+                        <span class="checkmark"></span>
+                        Require Password Change Every 90 Days
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="enableTwoFactor" />
+                        <span class="checkmark"></span>
+                        Enable Two-Factor Authentication (Coming Soon)
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-col">
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input type="checkbox" id="logUserActivity" checked />
+                        <span class="checkmark"></span>
+                        Log User Activity
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          id="enableLoginAttempts"
+                          checked
+                        />
+                        <span class="checkmark"></span>
+                        Lock Account After Failed Attempts
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="saveSecuritySettings()"
+                  >
+                    <i class="fas fa-save"></i>
+                    Save Security Settings
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- System Information -->
+          <!--<div class="card">-->
+          <!--    <div class="card-header">-->
+          <!--        <h2 class="card-title">-->
+          <!--            <i class="fas fa-info-circle"></i>-->
+          <!--            System Information-->
+          <!--        </h2>-->
+          <!--    </div>-->
+          <!--    <div class="card-body">-->
+          <!--        <div class="system-info">-->
+          <!--            <div class="info-row">-->
+          <!--                <span class="info-label">Application Version:</span>-->
+          <!--                <span class="info-value">Fish Pro v1.0.0</span>-->
+          <!--            </div>-->
+          <!--            <div class="info-row">-->
+          <!--                <span class="info-label">Database Version:</span>-->
+          <!--                <span class="info-value" id="dbVersion">Loading...</span>-->
+          <!--            </div>-->
+          <!--            <div class="info-row">-->
+          <!--                <span class="info-label">WebSocket Status:</span>-->
+          <!--                <span class="info-value" id="wsStatus">-->
+          <!--                    <span class="status-indicator" id="wsIndicator"></span>-->
+          <!--                    <span id="wsStatusText">Checking...</span>-->
+          <!--                </span>-->
+          <!--            </div>-->
+          <!--            <div class="info-row">-->
+          <!--                <span class="info-label">Last Backup:</span>-->
+          <!--                <span class="info-value">Manual backup required</span>-->
+          <!--            </div>-->
+          <!--            <div class="info-row">-->
+          <!--                <span class="info-label">Storage Used:</span>-->
+          <!--                <span class="info-value" id="storageUsed">Calculating...</span>-->
+          <!--            </div>-->
+          <!--        </div>-->
+
+          <!--        <div class="system-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">-->
+          <!--            <button class="btn btn-info" onclick="testConnection()">-->
+          <!--                <i class="fas fa-wifi"></i>-->
+          <!--                Test Connection-->
+          <!--            </button>-->
+          <!--            <button class="btn btn-warning" onclick="clearCache()">-->
+          <!--                <i class="fas fa-broom"></i>-->
+          <!--                Clear Cache-->
+          <!--            </button>-->
+          <!--            <button class="btn btn-success" onclick="exportData()">-->
+          <!--                <i class="fas fa-download"></i>-->
+          <!--                Export Data-->
+          <!--            </button>-->
+          <!--        </div>-->
+          <!--    </div>-->
+          <!--</div>-->
+        </div>
+      </main>
     </div>
+
+    <!-- Loader Spinner -->
+    <div
+      id="loader"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+      "
+    >
+      <div
+        class="spinner"
+        style="
+          border: 8px solid #f3f3f3;
+          border-top: 8px solid #3498db;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          animation: spin 1s linear infinite;
+        "
+      ></div>
+    </div>
+    <style>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
 
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/websocket.js"></script>
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/settings.js"></script>
-</body>
+    <script src="assets/js/sidebar.js"></script>
+  </body>
 </html>
